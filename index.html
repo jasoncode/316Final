@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="us">
+    <head>
+        <meta charset="utf-8">
+        <title>jQuery UI Example Page</title>
+        <link href="jquery-ui.css" rel="stylesheet">
+        <style>
+            body{
+            font: 62.5% "Trebuchet MS", sans-serif;
+            margin: 50px;
+            }
+
+</style>
+    </head>
+    <body>
+        <h1>CS 316 -Visualizations</h1>
+        <div class="ui-widget">
+</div>
+        <div class="ui-widget">
+            <p>These are some static visualizations of the results of our SQL queries. We are working on setting up a server so that these visualizations can be generated dynamically for any two congresspersons.</p>
+        </div>
+        <!-- Autocomplete -->
+        <h2 class="demoHeaders">Enter a name:</h2>
+        <div>
+            <input id="autocomplete1" title="type &quot;a&quot;">
+        </div>
+        <h2 class="demoHeaders">Enter a second name:</h2>
+        <div>
+            <input id="autocomplete2" title="type &quot;a&quot;">
+        </div>
+        <button id="compare" type="button">Compare</button>
+
+        <div id="repVsRepContainer" style="height: 400px; margin: auto; min-width: 310px; max-width: 700px;"></div>
+        <br />
+        <div id="repVsRepByMonthContainer" style="height: 400px; margin: auto; min-width: 310px; max-width: 700px;"></div>
+        <br />
+        <div id="repVsPres" style="height: 400px; margin: auto; min-width: 310px; max-width: 700px;"></div>
+        <!--
+        <div>
+           <iframe width="800" height="700" src="Brown_President.htm" frameborder="0" allowfullscreen> data-pg-id="39990"></iframe>             
+        </div>
+        
+        <div>
+            <iframe width="800" height="500" src="Brown_with_Leadership.htm" frameborder="0" allowfullscreen> data-pg-id="39990"></iframe>             
+        </div>
+        <div>
+            <iframe width="800" height="500" src="Brown_Cantwell_votesOverYears.htm" frameborder="0" allowfullscreen> data-pg-id="39990"></iframe>             
+        </div>
+        <h2 class="demoHeaders">Word cloud for the subjects of the bills Maria Cantwell (D-WA) and Mitch McConnell (R-KY) agree on:</h2>
+        <img width="800" height="500" src="WordCloud_agree.png">
+        <h2 class="demoHeaders"><br><br>Word cloud for the subjects of the bills Maria Cantwell (D-WA) and Mitch McConnell (R-KY) disagree on:</h2>
+        <img width="800" height="500" src="WordCloud_disagree.png">
+        <h2 class="demoHeaders"><br><br></h2>
+        <div>
+            <iframe width="800" height="500" src="Brown_Cantwell_similarity.htm" frameborder="0" allowfullscreen> data-pg-id="39990"></iframe>             
+        </div>  -->
+
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <script src="js/highcharts.js"></script>
+  <script src="js/highcharts-more.js"></script>
+  <script src="js/modules/exporting.js"></script>
+
+        <script>
+
+        var representative1;
+        var representative2;
+
+        $( "#autocomplete1" ).autocomplete({
+         source: "php/autocomplete.php",
+         minLength: 1,
+
+         select: function( event, ui ) {
+            representative1 = ui.item.label;
+            
+         }
+        });
+
+        $( "#autocomplete2" ).autocomplete({
+         source: "php/autocomplete.php",
+         minLength: 1,
+
+         select: function( event, ui ) {
+            representative2 = ui.item.label;
+            
+         }
+        });
+
+
+        $("#compare").on('click', function()
+        {
+            var rep1FirstName = representative1.split(' ')[0];
+            var rep1LastName = representative1.split(' ')[1];
+            var rep2FirstName = representative2.split(' ')[0];
+            var rep2LastName = representative2.split(' ')[1];
+
+            rep1VsRep2(rep1FirstName, rep1LastName, rep2FirstName, rep2LastName);
+            repControversialCount(rep1FirstName, rep1LastName);
+
+        });
+
+
+        function rep1VsRep2(rep1FirstName, rep1LastName, rep2FirstName, rep2LastName)
+        {
+            //Holds the agreed/disagreed vote counts in order from 2011 - 2014
+            var agreeCountArray;
+            var disagreeCountArray;
+            var countArray;
+
+            var rep1 = rep1FirstName + ' ' + rep1LastName;
+            var rep2 = rep2FirstName + ' ' + rep2LastName;
+
+            $.post('php/repVsRepVoteCount.php', {
+                rep1First: rep1FirstName,
+                rep1Last: rep1LastName,
+                rep2First: rep2FirstName,
+                rep2Last: rep2LastName},
+
+                function(data){
+                    countArray = JSON.parse(data); //convert the JSON back into an array
+                    //console.log(countArray);
+                    agreeCountArray = countArray[0];
+                    disagreeCountArray = countArray[1];
+
+                    //negative values for the graph
+                    for(i = 0; i < disagreeCountArray.length; i++)
+                    {
+                      disagreeCountArray[i] = -(disagreeCountArray[i]);
+                    }
+
+                    agreeWithPresArray = countArray[2];
+                    disagreeWithPresArray=countArray[3];
+
+                    //negative values for the graph
+                    for(i = 0; i < disagreeWithPresArray.length; i++)
+                    {
+                      disagreeWithPresArray[i] = -(disagreeWithPresArray[i]);
+                    }
+
+
+                    createRepVsRepChart(agreeCountArray, disagreeCountArray, rep1, rep2);
+                    createRep1VsPresident(agreeWithPresArray, disagreeWithPresArray, rep1);
+                });
+
+
+        }
+
+        function createRepVsRepChart(agreeCountArray, disagreeCountArray, rep1Name, rep2Name)
+        {
+                                    var years = ["2011", "2012", "2013", "2014"];
+
+                                    $('#repVsRepContainer').highcharts({
+                                                               chart: {
+                                                               type: 'column'
+                                                               },
+                                                               title: {
+                                                               text: 'Votes by ' + rep1Name + ', ' + rep2Name
+                                                               },
+                                                               subtitle: {
+                                                               text: 'Source: <a href="http://www.govtrack.us/developers">Govtrack.us</a>'
+                                                               },
+                                                               xAxis: [{
+                                                                       title: {
+                                                                       text: 'Year'
+                                                                       },
+                                                                       categories: years,
+                                                                       reversed: false,
+                                                                       labels: {
+                                                                       step: 1
+                                                                       }
+                                                                       }, { // mirror axis on right side
+                                                                       opposite: true,
+                                                                       reversed: false,
+                                                                       categories: years,
+                                                                       linkedTo: 0,
+                                                                       labels: {
+                                                                       step: 1
+                                                                       }
+                                                                       }],
+                                                               yAxis: {
+                                                               title: {
+                                                               text: 'Votes'
+                                                               },
+                                                               labels: {
+                                                               formatter: function () {
+                                                               return Math.abs(this.value);
+                                                               }
+                                                               }
+                                                               },
+                                                               
+                                                               plotOptions: {
+                                                               series: {
+                                                               stacking: 'normal'
+                                                               }
+                                                               },
+                                                               
+                                                               tooltip: {
+                                                               formatter: function () {
+                                                               return '<b>' + this.series.name + 's in year ' + this.point.category + '</b><br/>' +
+                                                               'Count: ' + Highcharts.numberFormat(Math.abs(this.point.y), 0);
+                                                               }
+                                                               },
+                                                               
+                                                               series: [{
+                                                                        name: 'Disagree',
+                                                                        data:  disagreeCountArray.reverse()
+                                                                        }, {
+                                                                        name: 'Agree',
+                                                                        data: agreeCountArray.reverse()
+                                                                        }]
+                                                               });
+        
+        viewByMonthButtons(rep1Name, rep2Name);
+                                
+        }
+
+        function viewByMonthButtons(rep1Name, rep2Name)
+        {
+          var grid = document.getElementById('repVsRepContainer');
+          var labels = grid.getElementsByClassName("highcharts-axis-labels highcharts-xaxis-labels")[0];
+          var years = labels.getElementsByTagName("text");
+
+          for (var i = 0; i < years.length; i++)
+          {
+
+            var yearElement = years[i];
+            year = yearElement.innerHTML;
+            yearElement.addEventListener("click", phpByMonthDisplay.bind(null, year, rep1Name, rep2Name));
+
+            //Things to make the button appear and look pretty later
+
+            /*year = years[i].innerHTML;
+
+            years[i].innerHTML = '';
+
+            var yearButton = document.createElement('button');
+            yearButton.innerHTML=year;
+            years[i].appendChild(yearButton);*/
+          }
+          
+        }
+
+        function phpByMonthDisplay(yearInput, rep1Name, rep2Name)
+        {
+
+            var rep1FirstName = rep1Name.split(' ')[0];
+            var rep1LastName = rep1Name.split(' ')[1];
+            var rep2FirstName = rep2Name.split(' ')[0];
+            var rep2LastName = rep2Name.split(' ')[1];
+
+            var agreeArr;
+            var disagreeArr;
+
+            $.post('php/repVsRepByMonth.php', {
+                rep1First: rep1FirstName,
+                rep1Last: rep1LastName,
+                rep2First: rep2FirstName,
+                rep2Last: rep2LastName,
+                year: yearInput},
+                function(data)
+                {
+                  data = JSON.parse(data);
+                  agreeArr = data[0];
+                 
+                  disagreeArr = data[1];
+                  
+                  formatMonthArrays(agreeArr, disagreeArr, rep1Name, rep2Name, yearInput);
+                   console.log(agreeArr);
+                   console.log(disagreeArr);
+                });
+
+        }
+
+        function formatMonthArrays(agreeArr, disagreeArr, rep1Name, rep2Name, year)
+        {
+            var fixedAgreeArr = Array.apply(null, new Array(12)).map(Number.prototype.valueOf,0);
+            var fixedDisagreeArr = Array.apply(null, new Array(12)).map(Number.prototype.valueOf,0);
+
+            for (var i = 0; i < agreeArr.length-1; i = i+2)
+            {
+              var month = agreeArr[i];
+              var value = agreeArr[i+1];
+              fixedAgreeArr[month-1] = value;
+            }
+
+            for (var i = 0; i < disagreeArr.length-1; i = i+2)
+            {
+              var month = disagreeArr[i];
+              var value = disagreeArr[i+1];
+              fixedDisagreeArr[month-1] = -value;
+            }
+
+            createRepVsRepByMonthDisplay(fixedAgreeArr, fixedDisagreeArr, rep1Name, rep2Name, year);
+        }
+
+        function repControversialCount(firstName, lastName)
+        {
+            $.post('php/controversy.php', {
+                rep1First: firstName,
+                rep1Last: lastName},
+                
+                function(data)
+                {
+                  data = JSON.parse(data);
+                  agreeArr = data[0];
+                  agreeArr.sort();
+                 
+                  disagreeArr = data[1];
+                  disagreeArr.sort();
+                  console.log(agreeArr);
+                  console.log(disagreeArr);
+
+                });
+        }
+
+        function createRepVsRepByMonthDisplay(agree, disagree, rep1Name, rep2Name, year)
+        {
+         var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+         //var repMonthDisplay = document.createElement('div');
+         //repMonthDisplay.setAttribute('id', 'repMonthDisplay');
+        // repMonthDisplay.setAttribute('style', 'height: 400px; margin: auto; min-width: 310px; max-width: 700px;');
+         //document.getElementById('repVsRepContainer').appendChild(repMonthDisplay);
+
+        /* $('#repMonthDisplay').mouseout(function()
+         {
+          $('#repMonthDisplay').remove();
+         });*/
+
+         $('#repVsRepByMonthContainer').highcharts({
+                                                               chart: {
+                                                               type: 'column'
+                                                               },
+                                                               title: {
+                                                               text: 'Votes by ' + rep1Name + ', ' + rep2Name + '( '+ year+' )'
+                                                               },
+                                                               subtitle: {
+                                                               text: 'Source: <a href="http://www.govtrack.us/developers">Govtrack.us</a>'
+                                                               },
+                                                               xAxis: [{
+                                                                       title: {
+                                                                       text: 'Month'
+                                                                       },
+                                                                       categories: months,
+                                                                       reversed: false,
+                                                                       labels: {
+                                                                       step: 1
+                                                                       }
+                                                                       }, { // mirror axis on right side
+                                                                       opposite: true,
+                                                                       reversed: false,
+                                                                       categories: months,
+                                                                       linkedTo: 0,
+                                                                       labels: {
+                                                                       step: 1
+                                                                       }
+                                                                       }],
+                                                               yAxis: {
+                                                               title: {
+                                                               text: 'Votes'
+                                                               },
+                                                               labels: {
+                                                               formatter: function () {
+                                                               return Math.abs(this.value);
+                                                               }
+                                                               }
+                                                               },
+                                                               
+                                                               plotOptions: {
+                                                               series: {
+                                                               stacking: 'normal'
+                                                               }
+                                                               },
+                                                               
+                                                               tooltip: {
+                                                               formatter: function () {
+                                                               return '<b>' + this.series.name + 's in month ' + this.point.category + '</b><br/>' +
+                                                               'Count: ' + Highcharts.numberFormat(Math.abs(this.point.y), 0);
+                                                               }
+                                                               },
+                                                               
+                                                               series: [{
+                                                                        name: 'Disagree',
+                                                                        data:  disagree
+                                                                        }, {
+                                                                        name: 'Agree',
+                                                                        data: agree
+                                                                        }]
+                                                               });
+
+        }
+
+        function createRep1VsPresident(agreeArray, disagreeArray, rep1Name)
+        {
+          var years = ["2012", "2013"];
+                  $(document).ready(function () {
+                                    $('#repVsPres').highcharts({
+                                                               chart: {
+                                                               type: 'column'
+                                                               },
+                                                               title: {
+                                                               text: "Votes by " + rep1Name + " compared to the President's position"
+                                                               },
+                                                               subtitle: {
+                                                               text: 'Source: <a href="http://www.govtrack.us/developers">Govtrack.us</a>'
+                                                               },
+                                                               xAxis: [{
+                                                                       title: {
+                                                                       text: 'Year'
+                                                                       },
+                                                                       categories: years,
+                                                                       reversed: false,
+                                                                       labels: {
+                                                                       step: 1
+                                                                       }
+                                                                       }, { // mirror axis on right side
+                                                                       opposite: true,
+                                                                       reversed: false,
+                                                                       categories: years,
+                                                                       linkedTo: 0,
+                                                                       labels: {
+                                                                       step: 1
+                                                                       }
+                                                                       }],
+                                                               yAxis: {
+                                                               title: {
+                                                               text: 'Votes'
+                                                               },
+                                                               labels: {
+                                                               formatter: function () {
+                                                               return Math.abs(this.value);
+                                                               }
+                                                               }
+                                                               },
+                                                               
+                                                               plotOptions: {
+                                                               series: {
+                                                               stacking: 'normal'
+                                                               }
+                                                               },
+                                                               
+                                                               tooltip: {
+                                                               formatter: function () {
+                                                               return '<b>' + this.series.name + 's in year ' + this.point.category + '</b><br/>' +
+                                                               'Count: ' + Highcharts.numberFormat(Math.abs(this.point.y), 0);
+                                                               }
+                                                               },
+                                                               
+                                                               series: [{
+                                                                        name: 'Disagree',
+                                                                        data:  disagreeArray
+                                                                        }, {
+                                                                        name: 'Agree',
+                                                                        data: agreeArray
+                                                                        }]
+                                                               });
+                                    });
+        }
+
+
+</script>
+    </body>
+</html>
