@@ -95,7 +95,7 @@
   </div>
 
   <div id="twoRepSponsorship" class="sponsorship" ng-show="control.showTwoSponsorship">
-    <h6> {{control.representative1}}'s Bills Sponsored by {{control.representative2}}</h6>
+    <h6> {{control.representative1}}'s Bills Cosponsored by {{control.representative2}}</h6>
     <div class="textAndButton">
       <p> Bills Sponsored: {{control.rep1BillsCount}}
         <button ng-hide="control.showRep1SponsoredBills" ng-click="control.toggleRep1Bills()"> See Bills </button>
@@ -104,7 +104,7 @@
       <rep1-bills/>
     </div>
 
-    <h6> {{control.representative2}}'s Bills Sponsored by {{control.representative1}}</h6>
+    <h6> {{control.representative2}}'s Bills Cosponsored by {{control.representative1}}</h6>
     <div class="textAndButton">
       <p> Bills Sponsored: {{control.rep2BillsCount}}
         <button ng-hide="control.showRep2SponsoredBills" ng-click="control.toggleRep2Bills()"> See Bills </button>
