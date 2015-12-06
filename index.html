@@ -35,6 +35,8 @@
         <div id="repVsRepByMonthContainer" style="height: 400px; margin: auto; min-width: 310px; max-width: 700px;"></div>
         <br />
         <div id="repVsPres" style="height: 400px; margin: auto; min-width: 310px; max-width: 700px;"></div>
+        <br />
+        <div id="controversialGraph" style="height: 400px; margin: auto; min-width: 310px; max-width: 700px;"></div>
         <!--
         <div>
            <iframe width="800" height="700" src="Brown_President.htm" frameborder="0" allowfullscreen> data-pg-id="39990"></iframe>             
@@ -323,25 +325,58 @@
                   {
                     var temp = new tempObj(disagreeArr[i], false);
                     unionArray.push(temp);
-                  } 
+                  }     
 
                   unionArray.sort(function(x, y)
                   {
-                    return x.value < y.value ? -1 : 1;
+                    return x.value - y.value;
                   });
 
-                  parseControversialData(unionArray);
+                  parseControversialData(unionArray, firstName + " " + lastName);
 
                 });
 
         }
 
-        function createControversyDisplay(unionArray)
+        function createControversyDisplay(probabilityArray, repName)
         {
-
+              $(function () {
+                            $('#controversialGraph').highcharts({
+                                title: {
+                                    text: 'Controversial Votes Position',
+                                    x: -20 //center
+                                },
+                                xAxis: {
+                                    categories: ['5%', '10%', '15%', '20%', '25%', '30%', '35%', '40%', '45%', '50%', '55%', '60%', '65%', '70%', '75%', '80%', '85%', '90%', '95%', '100%']
+                                },
+                                yAxis: {
+                                    title: {
+                                        text: 'Probability of agreeing with the party'  
+                                    },
+                                    plotLines: [{
+                                        value: 0,
+                                        width: 1,
+                                        color: '#808080'
+                                    }]
+                                },
+                                tooltip: {
+                                    valueSuffix: ''
+                                },
+                                legend: {
+                                    layout: 'vertical',
+                                    align: 'right',
+                                    verticalAlign: 'middle',
+                                    borderWidth: 0
+                                },
+                                series: [{
+                                    name: repName,
+                                    data: probabilityArray
+                                }]
+                            });
+                        });
         }
 
-        function parseControversialData(unionArray)
+        function parseControversialData(unionArray, repName)
         {
           console.log(unionArray);
 
@@ -370,6 +405,7 @@
             parsedDataArr.push(finalRatio);
         }
         console.log(parsedDataArr);
+        createControversyDisplay(parsedDataArr, repName)
       }
 
 
