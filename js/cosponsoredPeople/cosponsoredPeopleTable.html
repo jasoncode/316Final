@@ -1,0 +1,21 @@
+<div>
+  <image src = "images/Close_Button.ico" class="close-button" ng-click="cosponsored.hide()"></button>
+
+  <table class="bill-table">
+    <caption class = "table-title"> All Representatives Cosponsored </Caption>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Number of Bills Cosponsored</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="bill-row" ng-repeat="cosponsor in cosponsored.getAllCosponsored()">
+        <td >{{cosponsor[0]}} {{cosponsor[1]}} </td>
+        <td> {{cosponsor[2]}} </td>
+
+      </tr>
+    </tbody>
+  </table>
+
+</div>

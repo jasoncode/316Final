@@ -1,0 +1,218 @@
+html {
+  overflow-y: scroll;
+}
+body {
+  font: 62.5% "Trebuchet MS", sans-serif;
+  margin: 50px;
+}
+div {
+  padding-bottom: 10px;
+}
+sponsored-bills {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: fixed;
+  z-index: 9001;
+  transition: 3s linear all;
+}
+sponsored-bills > div {
+  width: 800px;
+  height: 600px;
+  position: relative;
+  margin: 10% auto;
+  padding: 5px 20px 5px 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #888888;
+  background: #fff;
+  z-index: 9001;
+  overflow: auto
+}
+
+cosponsored-bills {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: fixed;
+  z-index: 9001;
+  transition: 3s linear all;
+}
+cosponsored-bills > div {
+  width: 800px;
+  height: 600px;
+  position: relative;
+  margin: 10% auto;
+  padding: 5px 20px 5px 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #888888;
+  background: #fff;
+  z-index: 9001;
+  overflow: auto
+}
+
+cosponsors {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: fixed;
+  z-index: 9001;
+  transition: 3s linear all;
+}
+cosponsors > div {
+  width: 800px;
+  height: 600px;
+  position: relative;
+  margin: 10% auto;
+  padding: 5px 20px 5px 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #888888;
+  background: #fff;
+  z-index: 9001;
+  overflow: auto
+}
+
+cosponsored-people {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: fixed;
+  z-index: 9001;
+  transition: 3s linear all;
+}
+cosponsored-people > div {
+  width: 800px;
+  height: 600px;
+  position: relative;
+  margin: 10% auto;
+  padding: 5px 20px 5px 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #888888;
+  background: #fff;
+  z-index: 9001;
+  overflow: auto
+}
+
+rep1-bills {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: fixed;
+  z-index: 9001;
+  transition: 3s linear all;
+}
+
+rep1-bills > div {
+  width: 800px;
+  height: 600px;
+  position: relative;
+  margin: 10% auto;
+  padding: 5px 20px 5px 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #888888;
+  background: #fff;
+  z-index: 9001;
+  overflow: auto
+}
+
+rep2-bills {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: fixed;
+  z-index: 9001;
+  transition: 3s linear all;
+}
+
+rep2-bills > div {
+  width: 800px;
+  height: 600px;
+  position: relative;
+  margin: 10% auto;
+  padding: 5px 20px 5px 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #888888;
+  background: #fff;
+  z-index: 9001;
+  overflow: auto
+}
+
+joint-cosponsored {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: fixed;
+  z-index: 9001;
+  transition: 3s linear all;
+}
+
+joint-cosponsored > div {
+  width: 800px;
+  height: 600px;
+  position: relative;
+  margin: 10% auto;
+  padding: 5px 20px 5px 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #888888;
+  background: #fff;
+  z-index: 9001;
+  overflow: auto
+}
+.nameField {
+  display: inline-block;
+}
+.sponsorship {
+  font-size: 30px;
+}
+.bill-table {
+  font-size: 14px;
+}
+.bill-row>td {
+  padding: 5px;
+}
+.bill-number-cell {
+  width: 150px;
+}
+.bill-title-cell {
+  width: 700px;
+  text-align: left
+}
+.bill-title {
+  font-weight: bold;
+}
+.textAndButton>div {
+  display: inline-block;
+}
+
+.close-button{
+  position: relative;
+  top: 0px;
+  right: 0px;
+  padding: 2px;
+}
+
+.hide{
+
+}
+
+.table-title{
+  font-size: 30px;
+  padding-bottom: 5px;
+}
+
+.sponsorship-table{
+  width: 600px;
+}
+
+.graph{
+  height: 400px;
+  margin: auto;
+  min-width: 500px;
+  max-width: 700px
+}
