@@ -10,7 +10,8 @@
     'app.cosponsoredPeople',
     'app.rep1Bills',
     'app.rep2Bills',
-    'app.jointCosponsored'
+    'app.jointCosponsored',
+    'app.twoCategories'
   ])
 }
 )();
