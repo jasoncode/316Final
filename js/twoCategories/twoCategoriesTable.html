@@ -1,0 +1,23 @@
+<div>
+  <image src = "images/Close_Button.ico" class="close-button" ng-click="twoCategories.hide()"></button>
+
+    <table class="sponsorship-table">
+      <caption class="table-title"> {{control.representative1}} and {{control.representative2}} Agreement by Category</caption>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Agree</th>
+          <th>Disagree</th>
+          <th>Total</th>
+      </thead>
+      <tbody>
+        <tr class="bill-row" ng-repeat="category in twoCategories.getCategories()">
+          <td>{{category[0]}}</td>
+          <td>{{category[1]}}</td>
+          <td>{{category[2]}}</td>
+          <td>{{category[3]}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+</div>
