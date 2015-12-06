@@ -293,6 +293,11 @@
             createRepVsRepByMonthDisplay(fixedAgreeArr, fixedDisagreeArr, rep1Name, rep2Name, year);
         }
 
+        function tempObj(value, isAgree) {
+                  this.value = value;
+                  this.isAgree = isAgree;
+}
+
         function repControversialCount(firstName, lastName)
         {
             $.post('php/controversy.php', {
@@ -302,16 +307,72 @@
                 function(data)
                 {
                   data = JSON.parse(data);
+
                   agreeArr = data[0];
-                  agreeArr.sort();
-                 
                   disagreeArr = data[1];
-                  disagreeArr.sort();
-                  console.log(agreeArr);
-                  console.log(disagreeArr);
+
+                  var unionArray = new Array();
+
+                  for (var i = 0; i < agreeArr.length; i++)
+                  {
+                    var temp = new tempObj(agreeArr[i], true);
+                    unionArray.push(temp);
+                  } 
+
+                  for (var i = 0; i < disagreeArr.length; i++)
+                  {
+                    var temp = new tempObj(disagreeArr[i], false);
+                    unionArray.push(temp);
+                  } 
+
+                  unionArray.sort(function(x, y)
+                  {
+                    return x.value < y.value ? -1 : 1;
+                  });
+
+                  parseControversialData(unionArray);
 
                 });
+
         }
+
+        function createControversyDisplay(unionArray)
+        {
+
+        }
+
+        function parseControversialData(unionArray)
+        {
+          console.log(unionArray);
+
+          var step = Math.floor(unionArray.length/20);
+          console.log(step);
+
+          var parsedDataArr = new Array();
+
+          for (var j = 0; j < 20; j++)
+          {
+            var stepStart = j * step;
+            var numAgree = 0;
+
+            for (var i = stepStart; i < stepStart + step; i++)
+            {
+              var tempObj = unionArray[i];
+              
+              if (tempObj.isAgree)
+              {
+                numAgree++;
+              }
+
+            }
+
+            var finalRatio = numAgree / step;
+            parsedDataArr.push(finalRatio);
+        }
+        console.log(parsedDataArr);
+      }
+
+
 
         function createRepVsRepByMonthDisplay(agree, disagree, rep1Name, rep2Name, year)
         {
