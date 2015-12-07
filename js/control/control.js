@@ -36,6 +36,7 @@
     vm.toggleSecondName = toggleSecondName;
     vm.toggleTwoCategories = toggleTwoCategories;
     vm.ready = ready;
+    vm.notIndependent = notIndependent;
     vm.compareButtonText = "Compare";
 
 
@@ -47,6 +48,14 @@
       }
     }
 
+    function notIndependent(){
+      for(var i = 0; i < vm.party.size; i ++){
+        if(vm.party[i] == 'Republican'|| vm.party[i] == 'Democrat'){
+          return true;
+        }
+      }
+      return false;
+    }
     function run() {
       vm.showMonth = false;
       if (vm.showSecondName) {
@@ -144,6 +153,7 @@
         function(data) {
           countArray = JSON.parse(data); //convert the JSON back into an array
           agreeCountArray = countArray[0];
+          vm.agreeCountArray = agreeCountArray;
           disagreeCountArray = countArray[1];
 
           //negative values for the graph
