@@ -9,7 +9,6 @@
       restrict: 'E',
       scope: true,
       link: function() {
-        console.log("jointCosponsored Directive Linked");
       },
       templateUrl: 'js/jointCosponsored/jointCosponsoredTable.html',
       controller: 'jointCosponsoredController',
