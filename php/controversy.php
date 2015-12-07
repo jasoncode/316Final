@@ -52,7 +52,7 @@
 
 		while ($line = pg_fetch_row($result)) {
 				if ((strcmp($line[0], "0") !== 0) && (strcmp($line[0], "-1") !== 0))
-				{
+				{   //intvals to convert numbers
             $line2 = array($line[0], $line[1], intval($line[2]), intval($line[3]), intval($line[4]), intval($line[5]), intval($line[6]), intval($line[7]));
     				array_push($bill_agree_arr, $line2);
     			}
