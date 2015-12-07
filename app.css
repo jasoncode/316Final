@@ -47,3 +47,12 @@ input[data-toggle]:checked + label:active {
       font-size: 70%;
       text-align: center;
       line-height: 2rem; }
+
+ .large-offset-left-1 {
+    margin-right: 8.33333% !important; }
+
+     .small-offset-left-2 {
+    margin-right: 4.33333% !important; }
+
+    .small-offset-left-1 {
+    margin-right: 6.33333% !important; }

@@ -755,23 +755,6 @@
                     }
                   },
 
-                  tooltip: {
-
-                    formatter: function() {
-                      var temp = this.key;
-                      for (var i = 0; i < categoriesArray.length; i++)
-                      {
-                        var category = categoriesArray[i];
-
-                        if (temp == category.name)
-                        {
-                          return '<b>'+ 'Amount: ' + category.donation.formatMoney(0, '.', ',') + '</b>';
-                        }
-
-                      }
-                    }
-                  },
-
                   series: [{
                     name: 'Disagree',
                     data: disagreeArray
@@ -782,22 +765,7 @@
                     name: 'Donation Amount',
                     type: 'spline',
                     yAxis: 1,
-                    data: donations,
-                    tooltip: {
-                        formatter: function() {
-                            var temp = this.key;
-                            for (var i = 0; i < categoriesArray.length; i++)
-                            {
-                              var category = categoriesArray[i];
-
-                              if (temp == category.name)
-                              {
-                                return '<b>'+ 'Amount: ' + category.donation + '</b>';
-                              }
-
-                            }
-                          }
-                    }
+                    data: donations
         }
                   ]
                 });
