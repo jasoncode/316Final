@@ -5,7 +5,7 @@
 		$rep1First = $_POST['rep1First'];
 		$rep1Last = $_POST['rep1Last'];
 
-		$dbconn = pg_connect("dbname=us_congress host=localhost user=postgres password=kushal941")
+		$dbconn = pg_connect("dbname=us_congress host=localhost user=postgres password=Bd3nM2!Vg27aJ!0")
     				or die('Could not connect: ' . pg_last_error());
 
     	$contributions_Arr = array();

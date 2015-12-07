@@ -13,7 +13,7 @@
 						or die('Could not connect: ' . pg_last_error());
 
     $categoryTable = array();
-    $categorySql = "SELECT catname, agree,disagree, total
+    $categorySql = "SELECT catname, agree,disagree
                  FROM   organization_industry_info
                  NATURAL JOIN (SELECT t7.catcode, agree, disagree,total
                      FROM   (SELECT catcode,Sum(agree) AS agree,
@@ -227,7 +227,7 @@
            'amendment'))) AS t9
        GROUP  BY catcode) AS t8
        WHERE  t7.catcode = t8.catcode) AS counts
-			 ORDER BY cast(agree as float)/cast(total as float) DESC, total DESC";
+			 ORDER BY agree DESC";
 
     $result = pg_query($dbconn, $categorySql) or die('Query failed: ' . pg_last_error());
 

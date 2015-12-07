@@ -240,7 +240,7 @@
       $.post('php/repVsRepByMonth.php', {
           rep1First: rep1FirstName,
           rep1Last: rep1LastName,
-          rep2First: rep2FirstName,
+          rep2First: rep2FirstName,/
           rep2Last: rep2LastName,
           year: yearInput
         },
@@ -278,7 +278,7 @@
 
     function calculateControversyScore(currentArray)
     {
-     
+
       currentArray = currentArray.slice(2);  //remove the vote_id and use only the integers
       var max = Math.max.apply(null, currentArray);
       var sum = currentArray.reduce(function(pv, cv) { return pv + cv; }, 0);
