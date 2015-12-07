@@ -8,7 +8,9 @@ Note that we also used Professor Yang's database, which he provided to us, in or
 We also have an index and css file in the root directory, which is the base for our website.
 The rest of the folders and files contain dependencies for our front end.
 
-# In order to use our system, one needs to be able to control the php server which is the base of our program. In order to do this we used XAMPP (although presumably other programs will work), which provides a quick way to get a php server up and running. We placed our whole repository into the xampp/htdocs folder, and also created our database in the same folder. Then open the XAMPP control panel and start the apache module. Then navigate your web browser to localhost/316Final and the web page should be running.
+# How to use our code base:
+
+In order to use our system, one needs to be able to control the php server which is the base of our program. In order to do this we used XAMPP (although presumably other programs will work), which provides a quick way to get a php server up and running. We placed our whole repository into the xampp/htdocs folder, and also created our database in the same folder. Then open the XAMPP control panel and start the apache module. Then navigate your web browser to localhost/316Final and the web page should be running.
 In order to set up the database, create the empty database in xampp/htdocs. Then in order to load our data into it, first create the tables from 316Final/database/sql/create.sql. Then in the same folder run load.sql. Then load Professor Yang's data. At this point everything should be functional and you should be able to use the website.
 
 # Limitations:
