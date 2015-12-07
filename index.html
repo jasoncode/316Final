@@ -12,7 +12,6 @@
    </head>
    <body ng-controller="Control as control">
       <!--Top bar -->
-      <div class="row">
          <div class="large-12 columns">
             <nav class="top-bar" data-topbar>
                <ul class="title-area">
@@ -27,9 +26,9 @@
                </ul>
             </nav>
          </div>
-      </div>
       <!--Selection Panel-->
-      <div class="row">
+      <br/>
+      <br/>
          <div class="large-12 large-centered columns">
             <div class="panel callout radius">
                <div class="row">
@@ -63,9 +62,6 @@
                </div>
             </div>
          </div>
-      </div>
-      <div id="repVsRepContainer" ng-show = "control.showTwoSponsorship" class = "graph"></div>
-      <div id="repVsRepByMonthContainer" ng-show = "control.showMonth" class = "graph"></div>
       <!--One person sponsorship-->
       <div class = "row">
          <div class = "large-12 columns">
@@ -75,14 +71,14 @@
                      <h3>{{control.representative1}}'s Sponsorship</h3>
                   </div>
                   <div class = "row">
-                     <div class = "large-4 columns">
+                     <div class = "large-4 large-offset-1 columns">
                         <h3> Bills Sponsored: {{control.countOneSponsored}} </h3>
                         <button class="large-centered" ng-hide="control.showSponsoredBills" ng-click="control.toggleSponsoredBills()" ng-enabled = "control.countONeCosponsored > 0"> See Bills </button>
                         <div ng-show="control.showSponsoredBills">
                            <sponsored-bills />
                         </div>
                      </div>
-                     <div class = "large-4 columns">
+                     <div class = "large-4 large-offset-left-1 columns">
                         <h3> Bills Cosponsored: {{control.countOneCosponsored}} </h3>
                         <button class="large-centered" ng-hide="control.showCosponsoredBills" ng-click="control.toggleCosponsoredBills()" ng-enabled = "control.countOneCosponsored > 0"> See Bills </button>
                         <div ng-show="control.showCosponsoredBills">
@@ -90,34 +86,37 @@
                         </div>
                      </div>
                   </div>
-                  <div id="sharedSponsorship">
-                     <table class="sponsorship-table">
-                        <caption class="table-title"> {{control.representative1}}'s Top Cosponsors </caption>
-                        <thead>
-                           <tr>
-                              <th>Name</th>
-                        </thead>
-                        <tbody>
-                           <tr class="bill-row" ng-repeat="person in control.topCosponsors">
-                              <td class="bill-number-cell">{{person[0]}} {{person[1]}} </td>
-                           </tr>
-                        </tbody>
-                     </table>
-                     <button ng-hide="control.showCosponsors" ng-click="control.toggleCosponsors()">See all {{control.uniqueCosponsorCount}} Cosponsors </button>
-                     <div ng-show="control.showCosponsors">
-                        <cosponsors/>
-                     </div>
-                     <table class="sponsorship-table">
-                        <caption class="table-title"> Representatives {{control.representative1}} Cosponsors Most Often</Caption>
-                        <tbody>
-                           <tr class="bill-row" ng-repeat="person in control.topCosponsored">
-                              <td class="bill-number-cell">{{person[0]}} {{person[1]}} </td>
-                           </tr>
-                        </tbody>
-                     </table>
-                     <button ng-hide="control.showCosponsors" ng-click="control.toggleCosponsored()">See all {{control.cosponsoredCount}} representatives {{control.representative1}} has cosponsored</button>
-                     <div ng-show="control.showCosponsored">
-                        <cosponsored-people/>
+                  <br/>
+                  <div class="row">
+                     <div id="sharedSponsorship">
+                        <div class="large-4 large-offset-1 columns">
+                           <table class="sponsorship-table">
+                              <h5> {{control.representative1}}'s Top Cosponsors </h5>
+                              <tbody>
+                                 <tr class="bill-row" ng-repeat="person in control.topCosponsors">
+                                    <td class="bill-number-cell">{{person[0]}} {{person[1]}} </td>
+                                 </tr>
+                              </tbody>
+                           </table>
+                           <button ng-hide="control.showCosponsors" ng-click="control.toggleCosponsors()">See all {{control.uniqueCosponsorCount}} Cosponsors </button>
+                           <div ng-show="control.showCosponsors">
+                              <cosponsors/>
+                           </div>
+                        </div>
+                        <div class="large-4 large-offset-left-1 columns">
+                           <table class="sponsorship-table">
+                              <h5> Representatives {{control.representative1}} Cosponsors Most Often</h5>
+                              <tbody>
+                                 <tr class="bill-row" ng-repeat="person in control.topCosponsored">
+                                    <td class="bill-number-cell">{{person[0]}} {{person[1]}} </td>
+                                 </tr>
+                              </tbody>
+                           </table>
+                           <button ng-hide="control.showCosponsors" ng-click="control.toggleCosponsored()">See all {{control.cosponsoredCount}} representatives {{control.representative1}} has cosponsored</button>
+                           <div ng-show="control.showCosponsored">
+                              <cosponsored-people/>
+                           </div>
+                        </div>
                      </div>
                   </div>
                </div>
@@ -125,17 +124,23 @@
          </div>
       </div>
       <!--One person graph containers-->
-      <div class = "row">
-         <div class = "small-3 columns">
-            <div id="repVsPres" ng-show = "control.showOneSponsorship" class = "graph"></div>
+      <div class = "panel large-12 columns">
+            <div class = "row">
+               <div id="contributionsGraph" ng-show = "control.showOneSponsorship" class="graph"></div>
+            </div>
+            <!--Interest group tables go here-->
+      </div>
+      <br/>
+      <br/>
+      <div class="panel large-12 columns">
+         <div class = "large-5 large-offset-1 columns">
+            <div id="controversialGraph" ng-show = "control.showOneSponsorship" class="graph"></div>
          </div>
-         <div class = "small-3 columns">
-            <div id="controversialGraph" ng-show = "control.showOneSponsorship" class = "graph"></div>
-         </div>
-         <div class = "small-3 columns">
-            <div id="contributionsGraph" ng-show = "control.showOneSponsorship" class = "graph"></div>
+         <div class = "large-5 small-offset-left-2 columns">
+            <div id="repVsPres" ng-show = "control.showOneSponsorship" class="graph"></div>
          </div>
       </div>
+      <!--Two people sponsorship-->
       <div id="twoRepSponsorship" class="sponsorship" ng-show="control.showTwoSponsorship">
          <h6> {{control.representative1}}'s Bills Cosponsored by {{control.representative2}}</h6>
          <div class="textAndButton">
@@ -182,6 +187,8 @@
             <two-categories/>
          </div>
       </div>
+      <div id="repVsRepContainer" ng-show = "control.showTwoSponsorship" class = "graph"></div>
+      <div id="repVsRepByMonthContainer" ng-show = "control.showMonth" class = "graph"></div>
       <script src="./bower_components/angular/angular.js"></script>
       <script type="text/javascript" src="./js/app.module.js"></script>
       <script src="//code.jquery.com/jquery-1.10.2.js"></script>
