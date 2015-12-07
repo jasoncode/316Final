@@ -277,20 +277,28 @@
 
         function(data) {
           data = JSON.parse(data);
+          console.log(data);
           var agreeArr = data[0];
           var disagreeArr = data[1];
           var unionArray = new Array();
+
           for (var i = 0; i < agreeArr.length; i++) {
+            var current = agreeArr[i];
+           var controveryScore; 
+
             var temp = new tempObj(agreeArr[i], true);
             unionArray.push(temp);
           }
+
           for (var i = 0; i < disagreeArr.length; i++) {
             var temp = new tempObj(disagreeArr[i], false);
             unionArray.push(temp);
           }
+
           unionArray.sort(function(x, y) {
             return x.value - y.value;
           });
+
           parseControversialData(unionArray, firstName + " " + lastName);
         });
     }
@@ -336,11 +344,20 @@
       console.log(unionArray);
       var step = Math.floor(unionArray.length / 20);
       console.log(step);
+
+      for ( var i = 0; i < step; i++)
+      {
+        var tempObj = unionArray[i];
+          if (tempObj.isAgree) {
+            numAgree++;
+          }
+      }
+
       var parsedDataArr = new Array();
       for (var j = 0; j < 20; j++) {
         var stepStart = j * step;
         var numAgree = 0;
-        for (var i = stepStart; i < stepStart + step; i++) {
+        for (var i = stepStart; i < (stepStart + step); i++) {
           var tempObj = unionArray[i];
 
           if (tempObj.isAgree) {
@@ -518,7 +535,6 @@
           repLast: last
         }
       }).then(function(response) {
-        console.log(response);
         createSponsor(response.data);
       })
     }
@@ -532,7 +548,7 @@
       vm.countOneCosponsored = sponsor[3][0];
       vm.totalCosponsorCount = sponsor[4][0];
       vm.uniqueCosponsorCount = sponsor[5][0];
-      console.log('Please: ' + sponsor[6]);
+      //console.log('Please: ' + sponsor[6]);
       dataservice.setAllCosponsors(sponsor[6]);
       vm.topCosponsors = sponsor[7];
       vm.topCosponsored = sponsor[8];

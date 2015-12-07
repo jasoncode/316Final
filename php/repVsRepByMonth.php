@@ -6,7 +6,7 @@
 		$rep2First = $_POST['rep2First'];
 		$rep2Last = $_POST['rep2Last'];
 		$year = $_POST['year'];
-		$dbconn = pg_connect("dbname=us_congress host=localhost user=postgres password=Bd3nM2!Vg27aJ!0")
+		$dbconn = pg_connect("dbname=us_congress host=localhost user=postgres password=kushal941")
     				or die('Could not connect: ' . pg_last_error());
     	$agreeMonthArr = array();
     	$disagreeMonthArr = array();

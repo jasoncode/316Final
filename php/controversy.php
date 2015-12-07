@@ -5,13 +5,13 @@
 		$rep1First = $_POST['rep1First'];
 		$rep1Last = $_POST['rep1Last'];
 
-		$dbconn = pg_connect("dbname=us_congress host=localhost user=postgres password=Bd3nM2!Vg27aJ!0")
+		$dbconn = pg_connect("dbname=us_congress host=localhost user=postgres password=kushal941")
     				or die('Could not connect: ' . pg_last_error());
 
     	$bill_agree_arr = array();
     	$bill_disagree_arr = array();
 
-    	$agreeControversialSQL = "SELECT ratio
+    	$agreeControversialSQL = "SELECT *
 							FROM   (SELECT vote_id
         							FROM   (SELECT *
                 							FROM   person_votes
@@ -29,7 +29,7 @@
        							JOIN billcontroversy
          						ON cont.vote_id = billcontroversy.id";
 
-         $disagreeControversialSQL = "SELECT ratio
+         $disagreeControversialSQL = "SELECT *
 							FROM   (SELECT vote_id
         							FROM   (SELECT *
                 							FROM   person_votes
@@ -53,14 +53,16 @@
 		while ($line = pg_fetch_row($result)) {
 				if ((strcmp($line[0], "0") !== 0) && (strcmp($line[0], "-1") !== 0))
 				{
-    				array_push($bill_agree_arr, floatval($line[0]));
+            $line2 = array($line[0], $line[1], intval($line[2]), intval($line[3]), intval($line[4]), intval($line[5]), intval($line[6]), intval($line[7]));
+    				array_push($bill_agree_arr, $line2);
     			}
 			}
 
 		while ($line = pg_fetch_row($result1)) {
 				if ((strcmp($line[0], "0") !== 0) && (strcmp($line[0], "-1") !== 0))
 				{
-    				array_push($bill_disagree_arr, floatval($line[0]));
+          $line2 = array($line[0], $line[1], intval($line[2]), intval($line[3]), intval($line[4]), intval($line[5]), intval($line[6]), intval($line[7]));
+    				array_push($bill_disagree_arr, $line2);
     			}
 			}
 
