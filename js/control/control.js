@@ -128,7 +128,7 @@
 
         function(data) {
           countArray = JSON.parse(data); //convert the JSON back into an array
-
+          console.log(countArray);
           agreeCountArray = countArray[0];
           disagreeCountArray = countArray[1];
 
@@ -146,6 +146,8 @@
 
     function createRepVsRepChart(agreeCountArray, disagreeCountArray, rep1Name, rep2Name) {
       var years = ["2011", "2012", "2013", "2014"];
+
+
       $('#repVsRepContainer').highcharts({
         chart: {
           type: 'column'
