@@ -35,9 +35,19 @@
     vm.toggleJointCosponsored = toggleJointCosponsored;
     vm.toggleSecondName = toggleSecondName;
     vm.toggleTwoCategories = toggleTwoCategories;
+    vm.ready = ready;
     vm.compareButtonText = "Compare";
 
 
+    function ready(){
+      if(vm.showSecondName){
+        return document.getElementById("autocomplete1").value && document.getElementById("autocomplete2").value;
+      }
+      else{
+        console.log(document.getElementById("autocomplete1").value);
+        return document.getElementById("autocomplete1").value;
+      }
+    }
     function run(){
       vm.showMonth = false;
       if(vm.showSecondName){
@@ -462,6 +472,8 @@
           var presArray = JSON.parse(data);
           var agree = presArray[0];
           var disagree = presArray[1];
+          vm.chamber = presArray[2][0];
+          $scope.$apply();
           for (var i = 0; i < disagree.length; i++) {
             disagree[i] = -disagree[i];
           }
