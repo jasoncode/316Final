@@ -39,21 +39,19 @@
     vm.compareButtonText = "Compare";
 
 
-    function ready(){
-      if(vm.showSecondName){
+    function ready() {
+      if (vm.showSecondName) {
         return document.getElementById("autocomplete1").value && document.getElementById("autocomplete2").value;
-      }
-      else{
-        console.log(document.getElementById("autocomplete1").value);
+      } else {
         return document.getElementById("autocomplete1").value;
       }
     }
-    function run(){
+
+    function run() {
       vm.showMonth = false;
-      if(vm.showSecondName){
+      if (vm.showSecondName) {
         compare();
-      }
-      else{
+      } else {
         runOnePerson();
       }
     }
@@ -91,9 +89,10 @@
       vm.compareButtonText = vm.showSecondName ? "Hide Comparison" : "Compare"
     }
 
-    function toggleTwoCategories(){
+    function toggleTwoCategories() {
       vm.showTwoCategories = !vm.showTwoCategories;
     }
+
     function runOnePerson() {
       vm.representative1 = document.getElementById("autocomplete1").value;
       vm.showSponsoredBills = false;
@@ -105,8 +104,8 @@
       repVsPresident(first, last);
       repControversialCount(first, last);
       sponsor(first, last);
-      contributions(first,last);
-      interestGroups(first,last);
+      contributions(first, last);
+      interestGroups(first, last);
     }
 
     function compare() {
@@ -138,7 +137,6 @@
 
         function(data) {
           countArray = JSON.parse(data); //convert the JSON back into an array
-          console.log(countArray);
           agreeCountArray = countArray[0];
           disagreeCountArray = countArray[1];
 
@@ -227,7 +225,6 @@
       var grid = document.getElementById('repVsRepContainer');
       var labels = grid.getElementsByClassName("highcharts-axis-labels highcharts-xaxis-labels")[0];
       var years = labels.getElementsByTagName("text");
-      console.log("YEARS: " + years);
       for (var i = 0; i < years.length; i++) {
         var yearElement = years[i];
         var year = yearElement.innerHTML;
@@ -263,10 +260,8 @@
           var disagreeArr = data[1];
 
           formatMonthArrays(agreeArr, disagreeArr, rep1Name, rep2Name, yearInput);
-          console.log(agreeArr);
-          console.log(disagreeArr);
         });
-        $scope.$apply();
+      $scope.$apply();
     }
 
     function formatMonthArrays(agreeArr, disagreeArr, rep1Name, rep2Name, year) {
@@ -290,24 +285,26 @@
       this.isAgree = isAgree;
     }
 
-    function calculateControversyScore(currentArray)
-    {
+    function calculateControversyScore(currentArray) {
 
-      currentArray = currentArray.slice(2);  //remove the vote_id and use only the integers
+      currentArray = currentArray.slice(2); //remove the vote_id and use only the integers
       var max = Math.max.apply(null, currentArray);
-      var sum = currentArray.reduce(function(pv, cv) { return pv + cv; }, 0);
+      var sum = currentArray.reduce(function(pv, cv) {
+        return pv + cv;
+      }, 0);
 
-      return max/sum;
+      return max / sum;
     }
 
     function repControversialCount(firstName, lastName) {
+      console.log("START CONTRO");
       $.post('php/controversy.php', {
           rep1First: firstName,
           rep1Last: lastName
         },
 
         function(data) {
-
+          console.log(data);
           data = JSON.parse(data);
           var agreeArr = data[0];
           var disagreeArr = data[1];
@@ -328,14 +325,14 @@
           }
 
           unionArray.sort(function(x, y) {
-            return y.value-x.value;
+            return y.value - x.value;
           });
 
           parseControversialData(unionArray, firstName + " " + lastName);
         });
     }
 
-      function parseControversialData(unionArray, repName) {
+    function parseControversialData(unionArray, repName) {
 
       var step = Math.floor(unionArray.length / 20);
 
@@ -357,11 +354,11 @@
         parsedDataArr.push(finalRatio);
 
       }
-      console.log(parsedDataArr);
       createControversyDisplay(parsedDataArr, repName)
     }
 
     function createControversyDisplay(probabilityArray, repName) {
+      console.log("CONTRO");
       $(function() {
         $('#controversialGraph').highcharts({
           title: {
@@ -474,6 +471,7 @@
           var agree = presArray[0];
           var disagree = presArray[1];
           vm.chamber = presArray[2][0];
+          vm.party = presArray[3][0];
           $scope.$apply();
           for (var i = 0; i < disagree.length; i++) {
             disagree[i] = -disagree[i];
@@ -571,7 +569,6 @@
       vm.countOneCosponsored = sponsor[3][0];
       vm.totalCosponsorCount = sponsor[4][0];
       vm.uniqueCosponsorCount = sponsor[5][0];
-      //console.log('Please: ' + sponsor[6]);
       dataservice.setAllCosponsors(sponsor[6]);
       vm.topCosponsors = sponsor[7];
       vm.topCosponsored = sponsor[8];
@@ -607,7 +604,7 @@
       vm.showTwoSponsorship = true;
     }
 
-    function twoCategories(r1First, r1Last, r2First, r2Last){
+    function twoCategories(r1First, r1Last, r2First, r2Last) {
       $http({
         method: 'POST',
         url: 'php/twoCategories.php',
@@ -622,10 +619,10 @@
       })
     }
 
-    function createTwoCategories(data){
+    function createTwoCategories(data) {
       dataservice.setTwoCategories(data);
       vm.topCategories = [];
-      for(var i = 0; i < 10; i ++){
+      for (var i = 0; i < 10; i++) {
         vm.topCategories.push(data[i]);
       }
     }
@@ -643,19 +640,18 @@
         });
     }
 
-      Number.prototype.formatMoney = function(c, d, t){
-            var n = this,
-            c = isNaN(c = Math.abs(c)) ? 2 : c,
-            d = d == undefined ? "." : d,
-            t = t == undefined ? "," : t,
-            s = n < 0 ? "-" : "",
-            i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "",
-            j = (j = i.length) > 3 ? j % 3 : 0;
-           return s + '$' + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
-            };
+    Number.prototype.formatMoney = function(c, d, t) {
+      var n = this,
+        c = isNaN(c = Math.abs(c)) ? 2 : c,
+        d = d == undefined ? "." : d,
+        t = t == undefined ? "," : t,
+        s = n < 0 ? "-" : "",
+        i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "",
+        j = (j = i.length) > 3 ? j % 3 : 0;
+      return s + '$' + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+    };
 
-    function category(name, agree, disagree, total, donation)
-    {
+    function category(name, agree, disagree, total, donation) {
       this.name = name;
       this.agree = agree;
       this.disagree = disagree;
@@ -663,39 +659,34 @@
       this.donation = donation;
     }
 
-    function parseContributionsData(contributions_arr, first, last)
-    {
+    function parseContributionsData(contributions_arr, first, last) {
       var categoriesArray = new Array();
 
-      for (var i = 0; i < contributions_arr.length; i++)
-      {
+      for (var i = 0; i < contributions_arr.length; i++) {
         var categoryName = contributions_arr[i];
-        var agreeCount = contributions_arr[i+1];
-        var disagreeCount = - contributions_arr[i+2];
-        var totalCount = contributions_arr[i+3];
-        var contributionAmount = contributions_arr[i+4];
+        var agreeCount = contributions_arr[i + 1];
+        var disagreeCount = -contributions_arr[i + 2];
+        var totalCount = contributions_arr[i + 3];
+        var contributionAmount = contributions_arr[i + 4];
         var newOrg = new category(categoryName, agreeCount, disagreeCount, totalCount, contributionAmount);
         categoriesArray.push(newOrg);
         i = i + 4;
       }
 
-      categoriesArray.sort(function(x, y)
-      {
+      categoriesArray.sort(function(x, y) {
         return y.donation - x.donation;
       });
 
       createContributionGraph(first + " " + last, categoriesArray)
     }
 
-    function createContributionGraph(rep1Name, categoriesArray)
-    {
+    function createContributionGraph(rep1Name, categoriesArray) {
       var organizations = new Array();
       var agreeArray = new Array();
       var disagreeArray = new Array();
       var donations = new Array();
 
-      for (var i = 0; i < categoriesArray.length; i++)
-      {
+      for (var i = 0; i < categoriesArray.length; i++) {
         var category = categoriesArray[i];
         organizations.push(category.name);
         agreeArray.push(category.agree);
@@ -704,120 +695,120 @@
 
       }
 
-                  $('#contributionsGraph').highcharts({
-                  chart: {
-                    type: 'column'
-                  },
-                  title: {
-                    text: "Votes by " + rep1Name + " compared to the top donors"
-                  },
-                  subtitle: {
-                    text: 'Source: <a href="http://www.govtrack.us/developers">Govtrack.us</a>'
-                  },
-                  xAxis: [{
-                    title: {
-                      text: 'Organization'
-                    },
-                    categories: organizations,
-                    reversed: false,
-                    labels: {
-                     rotation: -45,
-                      step: 1
-                    }
-                  }],
-                  yAxis: [//primary y-axis
-                    {
-                    title: {
-                      text: 'Bills'
-                    },
-                    labels: {
-                      formatter: function() {
-                      return Math.abs(this.value);
-                      }
-                    }
-                  }, {
-                    title: {
-                      text: 'Donation Amount'
-                    },
-                    opposite: true,
-                    labels: {
-                      formatter: function() {
-                      return this.value.formatMoney(0, '.', ',');
-                      },
-                    }
-                  }],
-                  tooltip: {
-                            shared: true
-                        },
-                  plotOptions: {
-                    series: {
-                      stacking: 'normal'
-                    }
-                  },
+      $('#contributionsGraph').highcharts({
+        chart: {
+          type: 'column'
+        },
+        title: {
+          text: "Votes by " + rep1Name + " compared to the top donors"
+        },
+        subtitle: {
+          text: 'Source: <a href="http://www.govtrack.us/developers">Govtrack.us</a>'
+        },
+        xAxis: [{
+          title: {
+            text: 'Organization'
+          },
+          categories: organizations,
+          reversed: false,
+          labels: {
+            rotation: -45,
+            step: 1
+          }
+        }],
+        yAxis: [ //primary y-axis
+          {
+            title: {
+              text: 'Bills'
+            },
+            labels: {
+              formatter: function() {
+                return Math.abs(this.value);
+              }
+            }
+          }, {
+            title: {
+              text: 'Donation Amount'
+            },
+            opposite: true,
+            labels: {
+              formatter: function() {
+                return this.value.formatMoney(0, '.', ',');
+              },
+            }
+          }
+        ],
+        tooltip: {
+          shared: true
+        },
+        plotOptions: {
+          series: {
+            stacking: 'normal'
+          }
+        },
 
-                  tooltip: {
+        tooltip: {
 
-                    formatter: function() {
-                      var temp = this.key;
-                      for (var i = 0; i < categoriesArray.length; i++)
-                      {
-                        var category = categoriesArray[i];
+          formatter: function() {
+            var temp = this.key;
+            for (var i = 0; i < categoriesArray.length; i++) {
+              var category = categoriesArray[i];
 
-                        if (temp == category.name)
-                        {
-                          return '<b>'+ 'Amount: ' + category.donation.formatMoney(0, '.', ',') + '</b>';
-                        }
+              if (temp == category.name) {
+                return '<b>' + 'Amount: ' + category.donation.formatMoney(0, '.', ',') + '</b>';
+              }
 
-                      }
-                    }
-                  },
+            }
+          }
+        },
 
-                  series: [{
-                    name: 'Disagree',
-                    data: disagreeArray
-                  }, {
-                    name: 'Agree',
-                    data: agreeArray
-                  }, {
-                    name: 'Donation Amount',
-                    type: 'spline',
-                    yAxis: 1,
-                    data: donations,
-                    tooltip: {
-                        formatter: function() {
-                            var temp = this.key;
-                            for (var i = 0; i < categoriesArray.length; i++)
-                            {
-                              var category = categoriesArray[i];
+        series: [{
+          name: 'Disagree',
+          data: disagreeArray
+        }, {
+          name: 'Agree',
+          data: agreeArray
+        }, {
+          name: 'Donation Amount',
+          type: 'spline',
+          yAxis: 1,
+          data: donations,
+          tooltip: {
+            formatter: function() {
+              var temp = this.key;
+              for (var i = 0; i < categoriesArray.length; i++) {
+                var category = categoriesArray[i];
 
-                              if (temp == category.name)
-                              {
-                                return '<b>'+ 'Amount: ' + category.donation + '</b>';
-                              }
+                if (temp == category.name) {
+                  return '<b>' + 'Amount: ' + category.donation + '</b>';
+                }
 
-                            }
-                          }
-                    }
-        }
-                  ]
-                });
+              }
+            }
+          }
+        }]
+      });
     }
 
     function interestGroups(first, last) {
 
-      $.post('php/interestGroups.php', {
-          rep1First: first,
-          rep1Last: last
-        },
-
-        function(data) {
+      $http({
+          method: 'POST',
+          url: 'php/interestGroups.php',
+          data: {
+            repFirst: first,
+            repLast: last
+          }
+        }).then(function(data) {
           createInterestGroups(data);
-        });
-    }
+        })
 
-    function createInterestGroups(data){
-      vm.agreeGroups = data[0];
-      vm.disagreeGroups = data[1];
+      }
+
+    function createInterestGroups(data) {
+      vm.dataStuff = data.data;
+      vm.agreeGroups = vm.dataStuff[0];
+      vm.disagreeGroups = vm.dataStuff[1];
     }
 
 
