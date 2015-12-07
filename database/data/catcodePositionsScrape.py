@@ -33,6 +33,7 @@ def parser():
         else:
             print "no data"
 
+
     file.close()
     
 parser()

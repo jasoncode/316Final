@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="us" ng-app="app">
+   <head>
+      <meta charset="utf-8">
+      <title>jQuery UI Example Page</title>
+      <link href="jquery-ui.css" rel="stylesheet">
+      <link rel="stylesheet" href="index.css">
+      <link rel="stylesheet" href="foundation.css" />
+      <link rel="stylesheet" href="app.css" />
+      <link href="http://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet" />
+      <script src="js/vendor/modernizr.js"></script>
+   </head>
+   <body ng-controller="Control as control">
+      <!--Top bar -->
+      <div class="large-12 columns">
+         <nav class="top-bar" data-topbar>
+            <ul class="title-area">
+               <li class="name">
+                  <h1>
+                     <a href="#">
+                     CS 316 -Visualizations
+                     </a>
+                  </h1>
+               </li>
+               <li class="toggle-topbar menu-icon">
+                  <a href="#">
+                  <span>menu</span>
+                  </a>
+               </li>
+            </ul>
+         </nav>
+      </div>
+      <!--Selection Panel-->
+      <br/>
+      <br/>
+      <div class="large-12 large-centered columns">
+         <div class="panel callout radius">
+            <div class="row">
+               <div class="large-5 columns">
+                  <div class="hide" ng-show="control.showSponsoredBills || control.showCosponsoredBills"></div>
+                  <div>
+                     <form>
+                        <fieldset>
+                           <legend>Enter a name:</legend>
+                           <input type="text" id="autocomplete1" ng-model="control.nameText1" placeholder="">
+                        </fieldset>
+                     </form>
+                  </div>
+               </div>
+               <div class="large-1 columns">
+                  <button class="button small" ng-click="control.toggleSecondName()"> {{control.compareButtonText}} </button>
+                  <button class="button small" ng-disabled="!control.ready()" ng-click="control.run()">Go</button>
+               </div>
+               <div class="large-5 columns">
+                  <div ng-show="control.showSecondName">
+                     <form>
+                        <fieldset>
+                           <legend>Enter a second name:</legend>
+                           <div class="nameField" ng-show="control.showSecondName">
+                              <input type="text" id="autocomplete2" ng-model="control.nameText2" placeholder="" />
+                           </div>
+                        </fieldset>
+                     </form>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div id="result" ng-show="(!control.showSecondName && control.chamber) || ((control.showSecondName || (control.representative1 && control.representative2)) && control.agreeCountArray.length > 0)">
+         <!--One person sponsorship-->
+         <div class="row">
+            <div class="large-12 columns">
+               <div id="oneRepSponsorship" class="sponsorship" ng-show="control.showOneSponsorship">
+                  <div class="header panel">
+                     <div class="sign">
+                        <h3>{{control.representative1}}'s Sponsorship</h3>
+                     </div>
+                     <div class="row">
+                        <div class="large-4 large-offset-1 columns">
+                           <h3> Bills Sponsored: {{control.countOneSponsored}} </h3>
+                           <button class="large-centered" ng-hide="control.showSponsoredBills" ng-click="control.toggleSponsoredBills()" ng-disabled="!control.countOneSponsored"> See Bills </button>
+                           <div ng-show="control.showSponsoredBills">
+                              <sponsored-bills />
+                           </div>
+                        </div>
+                        <div class="large-4 large-offset-left-1 columns">
+                           <h3> Bills Cosponsored: {{control.countOneCosponsored}} </h3>
+                           <button class="large-centered" ng-hide="control.showCosponsoredBills" ng-click="control.toggleCosponsoredBills()" ng-disabled = "!control.countOneCosponsored"> See Bills </button>
+                           <div ng-show="control.showCosponsoredBills">
+                              <cosponsored-bills/>
+                           </div>
+                        </div>
+                     </div>
+                     <br/>
+                     <div class="row">
+                        <div id="sharedSponsorship">
+                           <div class="large-4 large-offset-1 columns">
+                              <table class="sponsorship-table">
+                                 <h5> {{control.representative1}}'s Top Cosponsors </h5>
+                                 <tbody>
+                                    <tr class="bill-row" ng-repeat="person in control.topCosponsors">
+                                       <td class="bill-number-cell">{{person[0]}} {{person[1]}} </td>
+                                    </tr>
+                                 </tbody>
+                              </table>
+                              <button ng-hide="control.showCosponsors" ng-disabled = "!control.uniqueCosponsorCount" ng-click="control.toggleCosponsors()">See all {{control.uniqueCosponsorCount}} Cosponsors </button>
+                              <div ng-show="control.showCosponsors">
+                                 <cosponsors/>
+                              </div>
+                           </div>
+                           <div class="large-4 large-offset-left-1 columns">
+                              <table class="sponsorship-table">
+                                 <h5> Representatives {{control.representative1}} Cosponsors Most Often</h5>
+                                 <tbody>
+                                    <tr class="bill-row" ng-repeat="person in control.topCosponsored">
+                                       <td class="bill-number-cell">{{person[0]}} {{person[1]}} </td>
+                                    </tr>
+                                 </tbody>
+                              </table>
+                              <button ng-hide="control.showCosponsors" ng-disabled = "!control.cosponsoredCount" ng-click="control.toggleCosponsored()">See all {{control.cosponsoredCount}} representatives {{control.representative1}} has cosponsored</button>
+                              <div ng-show="control.showCosponsored">
+                                 <cosponsored-people/>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!--One person graph containers-->
+         <div class="panel large-12 columns" ng-show="control.showOneSponsorship && control.chamber.indexOf('sen') >=0" >
+            <div class="row">
+               <div class="large-3 columns">
+                  <div id="contributionsGraph" class="graph"></div>
+               </div>
+               <div class="large-3 large-offset-3 columns">
+                  <table>
+                     <caption>Interest Groups {{control.representative1}} Most Agrees With</caption>
+                     <tbody>
+                        <tr class="bill-row" ng-repeat="group in control.agreeGroups">
+                           <td> {{group}}</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="large-3 columns">
+                  <table>
+                     <caption>Interest Groups {{control.representative1}} Most Disagrees With</caption>
+                     <tbody>
+                        <tr class="bill-row" ng-repeat="group in control.disagreeGroups">
+                           <td> {{group}}</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+         <br/>
+         <br/>
+         <div class="panel large-12 columns">
+            <div class="large-5 large-offset-1 columns">
+               <div id="controversialGraph" ng-show="control.showOneSponsorship && (control.party.indexOf('Democrat') >= 0 || control.party.indexOf('Republican') >=0)" class="graph"></div>
+            </div>
+            <div class="large-5 small-offset-left-2 columns">
+               <div id="repVsPres" ng-show="control.showOneSponsorship && control.chamber.indexOf('sen') >=0"  class="graph"></div>
+            </div>
+         </div>
+         <!--Two people sponsorship-->
+         <div class = "row">
+            <div class = "large-12 columns">
+               <div id="twoRepSponsorship" class="sponsorship" ng-show="control.showTwoSponsorship">
+                  <div class="header panel">
+                     <div class="sign">
+                        <h3>Sponsorship Comparison</h3>
+                     </div>
+                     <div class = "row">
+                        <div class = "large-3 columns">
+                           <h3> {{control.representative1}}'s Bills Cosponsored by {{control.representative2}}</h3>
+                           <div class="textAndButton">
+                              <p> Bills Sponsored: {{control.rep1BillsCount}} </p>
+                              <button ng-hide="control.showRep1SponsoredBills" ng-click="control.toggleRep1Bills()"> See Bills </button>
+                           </div>
+                           <div ng-show = "control.showRep1Bills">
+                              <rep1-bills/>
+                           </div>
+                        </div>
+                        <div class = "large-3 large-offset-1 columns">
+                           <h3> {{control.representative2}}'s Bills Cosponsored by {{control.representative1}}</h3>
+                           <div class="textAndButton">
+                              <p> Bills Sponsored: {{control.rep2BillsCount}} </p>
+                              <button ng-hide="control.showRep2SponsoredBills" ng-click="control.toggleRep2Bills()"> See Bills </button>
+                           </div>
+                           <div ng-show = "control.showRep2Bills".>
+                              <rep2-bills/>
+                           </div>
+                        </div>
+                        <div class = "large-3 columns">
+                           <h3> Bills Cosponsored by Both {{control.representative1}} and {{control.representative2}}</h3>
+                           <div class="textAndButton">
+                              <p> Bills Sponsored: {{control.cosponsoredBillsCount}}
+                                 <button ng-hide="control.showJointCosponsored" ng-click="control.toggleJointCosponsored()"> See Bills </button>
+                           </div>
+                           <div ng-show = "control.showJointCosponsored">
+                              <joint-cosponsored/>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row panel">
+                     <div class="large-3 columns">
+                     <table class="sponsorship-table">
+                        <caption class="table-title"> {{control.representative1}} and {{control.representative2}} Voting Comparison by Category</caption>
+                        <thead>
+                           <tr>
+                              <th>Category</th>
+                              <th>Agree</th>
+                              <th>Disagree</th>
+                        </thead>
+                        <tbody>
+                           <tr class="bill-row" ng-repeat="category in control.topCategories">
+                              <td>{{category[0]}}</td>
+                              <td>{{category[1]}}</td>
+                              <td>{{category[2]}}</td>
+                           </tr>
+                        </tbody>
+                     </table>
+                     <button ng-click = "control.toggleTwoCategories()"> All categories</button>
+                     <div ng-show = "control.showTwoCategories">
+                        <two-categories/>
+                     </div>
+                  </div>
+                  <div class = "large-3 large-offset-2 columns">
+                     <div id="repVsRepContainer" ng-show="control.showTwoSponsorship" class="graph"></div>
+                  </div>
+                  <div class = "large-3 large-offset-2 columns">
+                     <div id="repVsRepByMonthContainer" ng-show="control.showMonth" class="graph"></div>
+                  </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <script src="./bower_components/angular/angular.js"></script>
+      <script type="text/javascript" src="./js/app.module.js"></script>
+      <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+      <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+      <script src="./js/highcharts/highcharts.js"></script>
+      <script src="./js/highcharts/highcharts-more.js"></script>
+      <script src="./js/modules/exporting.js"></script>
+      <script type="text/javascript" src="./js/control/control.module.js"></script>
+      <script type="text/javascript" src="./js/control/control.js"></script>
+      <script type="text/javascript" src="./js/sponsoredBills/sponsoredBills.module.js"></script>
+      <script type="text/javascript" src="./js/sponsoredBills/sponsoredBills.controller.js"></script>
+      <script type="text/javascript" src="./js/sponsoredBills/sponsoredBills.directive.js"></script>
+      <script type="text/javascript" src="./js/cosponsoredBills/cosponsoredBills.module.js"></script>
+      <script type="text/javascript" src="./js/cosponsoredBills/cosponsoredBills.controller.js"></script>
+      <script type="text/javascript" src="./js/cosponsoredBills/cosponsoredBills.directive.js"></script>
+      <script type="text/javascript" src="./js/cosponsors/cosponsors.module.js"></script>
+      <script type="text/javascript" src="./js/cosponsors/cosponsors.controller.js"></script>
+      <script type="text/javascript" src="./js/cosponsors/cosponsors.directive.js"></script>
+      <script type="text/javascript" src="./js/cosponsoredPeople/cosponsoredPeople.module.js"></script>
+      <script type="text/javascript" src="./js/cosponsoredPeople/cosponsoredPeople.controller.js"></script>
+      <script type="text/javascript" src="./js/cosponsoredPeople/cosponsoredPeople.directive.js"></script>
+      <script type="text/javascript" src="./js/rep1Bills/rep1Bills.module.js"></script>
+      <script type="text/javascript" src="./js/rep1Bills/rep1Bills.controller.js"></script>
+      <script type="text/javascript" src="./js/rep1Bills/rep1Bills.directive.js"></script>
+      <script type="text/javascript" src="./js/rep2Bills/rep2Bills.module.js"></script>
+      <script type="text/javascript" src="./js/rep2Bills/rep2Bills.controller.js"></script>
+      <script type="text/javascript" src="./js/rep2Bills/rep2Bills.directive.js"></script>
+      <script type="text/javascript" src="./js/jointCosponsored/jointCosponsored.module.js"></script>
+      <script type="text/javascript" src="./js/jointCosponsored/jointCosponsored.controller.js"></script>
+      <script type="text/javascript" src="./js/jointCosponsored/jointCosponsored.directive.js"></script>
+      <script type="text/javascript" src="./js/twoCategories/twoCategories.module.js"></script>
+      <script type="text/javascript" src="./js/twoCategories/twoCategories.controller.js"></script>
+      <script type="text/javascript" src="./js/twoCategories/twoCategories.directive.js"></script>
+      <script type="text/javascript" src="./js/dataservice/dataservice.module.js"></script>
+      <script type="text/javascript" src="./js/dataservice/dataservice.js"></script>
+      <!--Autocomplete script-->
+      <script>
+         $("#autocomplete1").autocomplete({
+           source: "php/autocomplete.php",
+           minLength: 1,
+         
+           select: function(event, ui) {
+             representative1 = ui.item.label;
+           }
+         });
+         
+         $("#autocomplete2").autocomplete({
+           source: "php/autocomplete.php",
+           minLength: 1,
+         
+           select: function(event, ui) {
+             representative2 = ui.item.label;
+         
+           }
+         });
+      </script>
+   </body>
+</html>
