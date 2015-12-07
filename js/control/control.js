@@ -35,9 +35,19 @@
     vm.toggleJointCosponsored = toggleJointCosponsored;
     vm.toggleSecondName = toggleSecondName;
     vm.toggleTwoCategories = toggleTwoCategories;
+    vm.ready = ready;
     vm.compareButtonText = "Compare";
 
 
+    function ready(){
+      if(vm.showSecondName){
+        return document.getElementById("autocomplete1").value && document.getElementById("autocomplete2").value;
+      }
+      else{
+        console.log(document.getElementById("autocomplete1").value);
+        return document.getElementById("autocomplete1").value;
+      }
+    }
     function run(){
       vm.showMonth = false;
       if(vm.showSecondName){
@@ -96,6 +106,7 @@
       repControversialCount(first, last);
       sponsor(first, last);
       contributions(first,last);
+      interestGroups(first,last);
     }
 
     function compare() {
@@ -462,6 +473,8 @@
           var presArray = JSON.parse(data);
           var agree = presArray[0];
           var disagree = presArray[1];
+          vm.chamber = presArray[2][0];
+          $scope.$apply();
           for (var i = 0; i < disagree.length; i++) {
             disagree[i] = -disagree[i];
           }
@@ -583,7 +596,6 @@
         createCompareSponsor(response.data);
       })
     }
-
 
     function createCompareSponsor(compareSponsor) {
       dataservice.setRep1Bills(compareSponsor[0]);
@@ -791,6 +803,22 @@
                 });
     }
 
+    function interestGroups(first, last) {
+
+      $.post('php/interestGroups.php', {
+          rep1First: first,
+          rep1Last: last
+        },
+
+        function(data) {
+          createInterestGroups(data);
+        });
+    }
+
+    function createInterestGroups(data){
+      vm.agreeGroups = data[0];
+      vm.disagreeGroups = data[1];
+    }
 
 
   }
