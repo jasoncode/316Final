@@ -14,3 +14,5 @@ In order to use our system, one needs to be able to control the php server which
 In order to set up the database, create the empty database in xampp/htdocs. Then in order to load our data into it, first create the tables from 316Final/database/sql/create.sql. Then in the same folder run load.sql. Then load Professor Yang's data. At this point everything should be functional and you should be able to use the website.
 
 # Limitations:
+
+As discussed in the presentation, the nature of voting data leaves us with a limited dataset that is hard to draw conclusions from. However, we were able to display data in such a way that we could see patterns and make interesting observations. We were also limited to data from the 112th and 113th Congresses, which limited our scope.
