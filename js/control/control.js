@@ -106,6 +106,7 @@
       repControversialCount(first, last);
       sponsor(first, last);
       contributions(first,last);
+      interestGroups(first,last);
     }
 
     function compare() {
@@ -596,7 +597,6 @@
       })
     }
 
-
     function createCompareSponsor(compareSponsor) {
       dataservice.setRep1Bills(compareSponsor[0]);
       vm.rep1BillsCount = compareSponsor[1][0];
@@ -803,6 +803,22 @@
                 });
     }
 
+    function interestGroups(first, last) {
+
+      $.post('php/interestGroups.php', {
+          rep1First: first,
+          rep1Last: last
+        },
+
+        function(data) {
+          createInterestGroups(data);
+        });
+    }
+
+    function createInterestGroups(data){
+      vm.agreeGroups = data[0];
+      vm.disagreeGroups = data[1];
+    }
 
 
   }

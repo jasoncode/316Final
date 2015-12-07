@@ -6,11 +6,20 @@ $rep1First = $_POST['rep1First'];
 $rep1Last = $_POST['rep1Last'];
 
 
-$dbconn = pg_connect("dbname=us_congress host=localhost user=postgres password=kushal941")
+$dbconn = pg_connect("dbname=us_congress host=localhost user=postgres password=Bd3nM2!Vg27aJ!0")
 or die('Could not connect: ' . pg_last_error());
-
+$chamber = array();
 $agreeWithPres_arr = array();
 $disagreeWithPres_arr = array();
+
+$chamberSql = "SELECT type
+             FROM persons, person_roles
+             WHERE persons.id = person_roles.person_id AND first_name = '".$rep1First."' and last_name = '".$rep1Last."' AND (EXTRACT(YEAR from start_date) >= 2011 AND EXTRACT(YEAR from start_date) <= 2014)";
+
+$chamberRes = pg_query($dbconn, $chamberSql) or die('Query failed: ' . pg_last_error());
+while($line = pg_fetch_row($chamberRes)){
+  array_push($chamber,$line);
+}
 
 $presAgreeSQL = "SELECT
 EXTRACT(year FROM date) as year, first_name,last_name,count(id) as agreeCount
@@ -69,7 +78,7 @@ while ($line = pg_fetch_row($result2)) {
 
 pg_free_result($result2);
 
-$resultArray = array($agreeWithPres_arr, $disagreeWithPres_arr);
+$resultArray = array($agreeWithPres_arr, $disagreeWithPres_arr, $chamber);
 
 echo json_encode($resultArray);
 
