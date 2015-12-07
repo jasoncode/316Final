@@ -24,8 +24,7 @@
     vm.showRep2Bills = false;
     vm.showJointCosponsored = false;
     vm.showTwoCategories = false;
-    vm.runOnePerson = runOnePerson;
-    vm.compare = compare;
+    vm.run = run;
     vm.toggleSponsoredBills = toggleSponsoredBills;
     vm.toggleCosponsoredBills = toggleCosponsoredBills;
     vm.toggleCosponsors = toggleCosponsors;
@@ -37,18 +36,16 @@
     vm.toggleTwoCategories = toggleTwoCategories;
     vm.compareButtonText = "Compare";
 
-    $scope.processBillNumber = processBillNumber;
-
-    function processBillNumber(number) {
-      var startInfo = findBillStart(number);
-      var start = startInfo[0];
-      var startLength = startInfo[1];
-      var mid = number.substring(startLength, number.indexOf('-'));
-      var end = ' (' + number.substring(number.indexOf('-') + 1) + 'th' + ')';
-      return start + mid + end;
+ 
+    function run(){
+      if(vm.showSecondName){
+        compare();
+      }
+      else{
+        runOnePerson();
+      }
     }
-
-
+    
     function toggleSponsoredBills() {
       vm.showSponsoredBills = !vm.showSponsoredBills;
     }
