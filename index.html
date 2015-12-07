@@ -92,7 +92,11 @@
       <div ng-show="control.showCosponsored">
         <cosponsored-people/>
       </div>
+
+
     </div>
+
+
 
   </div>
 
@@ -124,6 +128,28 @@
       <joint-cosponsored/>
     </div>
 
+    <table class="sponsorship-table">
+      <caption class="table-title"> {{control.representative1}} and {{control.representative2}} Voting Comparison by Category</caption>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Agree</th>
+          <th>Disagree</th>
+          <th>Total</th>
+      </thead>
+      <tbody>
+        <tr class="bill-row" ng-repeat="category in control.topCategories">
+          <td>{{category[0]}}</td>
+          <td>{{category[1]}}</td>
+          <td>{{category[2]}}</td>
+          <td>{{category[3]}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <button ng-click = "control.toggleTwoCategories()"> All categories</button>
+    <div ng-show = "control.showTwoCategories">
+      <two-categories/>
+    </div>
   </div>
 
   <script src="./bower_components/angular/angular.js"></script>
@@ -156,6 +182,9 @@
   <script type="text/javascript" src="./js/jointCosponsored/jointCosponsored.module.js"></script>
   <script type="text/javascript" src="./js/jointCosponsored/jointCosponsored.controller.js"></script>
   <script type="text/javascript" src="./js/jointCosponsored/jointCosponsored.directive.js"></script>
+  <script type="text/javascript" src="./js/twoCategories/twoCategories.module.js"></script>
+  <script type="text/javascript" src="./js/twoCategories/twoCategories.controller.js"></script>
+  <script type="text/javascript" src="./js/twoCategories/twoCategories.directive.js"></script>
   <script type="text/javascript" src="./js/dataservice/dataservice.module.js"></script>
   <script type="text/javascript" src="./js/dataservice/dataservice.js"></script>
 

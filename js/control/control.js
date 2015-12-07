@@ -23,6 +23,7 @@
     vm.showRep1Bills = false;
     vm.showRep2Bills = false;
     vm.showJointCosponsored = false;
+    vm.showTwoCategories = false;
     vm.runOnePerson = runOnePerson;
     vm.compare = compare;
     vm.toggleSponsoredBills = toggleSponsoredBills;
@@ -33,6 +34,7 @@
     vm.toggleRep2Bills = toggleRep2Bills;
     vm.toggleJointCosponsored = toggleJointCosponsored;
     vm.toggleSecondName = toggleSecondName;
+    vm.toggleTwoCategories = toggleTwoCategories;
     vm.compareButtonText = "Compare";
 
     $scope.processBillNumber = processBillNumber;
@@ -80,6 +82,9 @@
       vm.compareButtonText = vm.showSecondName ? "Hide Comparison" : "Compare"
     }
 
+    function toggleTwoCategories(){
+      vm.showTwoCategories = !vm.showTwoCategories;
+    }
     function runOnePerson() {
       vm.representative1 = document.getElementById("autocomplete1").value;
       vm.showSponsoredBills = false;
@@ -91,6 +96,7 @@
       repVsPresident(first, last);
       repControversialCount(first, last);
       sponsor(first, last);
+      donors(first,last);
     }
 
     function compare() {
@@ -102,6 +108,7 @@
       var rep2LastName = vm.representative2.split(' ')[1];
       rep1VsRep2(rep1FirstName, rep1LastName, rep2FirstName, rep2LastName);
       compareSponsor(rep1FirstName, rep1LastName, rep2FirstName, rep2LastName);
+      twoCategories(rep1FirstName, rep1LastName, rep2FirstName, rep2LastName);
     };
 
     function rep1VsRep2(rep1FirstName, rep1LastName, rep2FirstName, rep2LastName) {
@@ -568,5 +575,35 @@
       vm.cosponsoredBillsCount = compareSponsor[5][0];
       vm.showTwoSponsorship = true;
     }
+
+    function donors(){
+
+    }
+
+    function twoCategories(r1First, r1Last, r2First, r2Last){
+      $http({
+        method: 'POST',
+        url: 'php/twoCategories.php',
+        data: {
+          rep1First: r1First,
+          rep1Last: r1Last,
+          rep2First: r2First,
+          rep2Last: r2Last
+        }
+      }).then(function(response) {
+        createTwoCategories(response.data);
+      })
+    }
+
+    function createTwoCategories(data){
+      dataservice.setTwoCategories(data);
+      vm.topCategories = [];
+      for(var i = 0; i < 10; i ++){
+        vm.topCategories.push(data[i]);
+      }
+      console.log("BLEAH: " + vm.topCategories);
+    }
+
+
   }
 })();
