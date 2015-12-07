@@ -34,7 +34,7 @@
   <div id="repVsRepByMonthContainer" ng-show = "control.showTwoSponsorship" class = "graph"></div>
   <div id="repVsPres" ng-show = "control.showOneSponsorship" class = "graph"></div>
   <div id="controversialGraph" ng-show = "control.showOneSponsorship" class = "graph"></div>
-  <div id="contributionsGraph" class = "graph" />
+  <div id="contributionsGraph" ng-show = "control.showOneSponsorship" class = "graph"></div>
 
 
   <div id="oneRepSponsorship" class="sponsorship" ng-show="control.showOneSponsorship">
@@ -44,7 +44,7 @@
         <button ng-hide="control.showSponsoredBills" ng-click="control.toggleSponsoredBills()"> See Bills </button>
     </div>
 
-    <div ng-show=c ontrol.showSponsoredBills>
+    <div ng-show="control.showSponsoredBills">
       <sponsored-bills/>
     </div>
 
@@ -92,7 +92,11 @@
       <div ng-show="control.showCosponsored">
         <cosponsored-people/>
       </div>
+
+
     </div>
+
+
 
   </div>
 
@@ -124,6 +128,28 @@
       <joint-cosponsored/>
     </div>
 
+    <table class="sponsorship-table">
+      <caption class="table-title"> {{control.representative1}} and {{control.representative2}} Voting Comparison by Category</caption>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Agree</th>
+          <th>Disagree</th>
+          <th>Total</th>
+      </thead>
+      <tbody>
+        <tr class="bill-row" ng-repeat="category in control.topCategories">
+          <td>{{category[0]}}</td>
+          <td>{{category[1]}}</td>
+          <td>{{category[2]}}</td>
+          <td>{{category[3]}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <button ng-click = "control.toggleTwoCategories()"> All categories</button>
+    <div ng-show = "control.showTwoCategories">
+      <two-categories/>
+    </div>
   </div>
 
   <script src="./bower_components/angular/angular.js"></script>
@@ -156,6 +182,9 @@
   <script type="text/javascript" src="./js/jointCosponsored/jointCosponsored.module.js"></script>
   <script type="text/javascript" src="./js/jointCosponsored/jointCosponsored.controller.js"></script>
   <script type="text/javascript" src="./js/jointCosponsored/jointCosponsored.directive.js"></script>
+  <script type="text/javascript" src="./js/twoCategories/twoCategories.module.js"></script>
+  <script type="text/javascript" src="./js/twoCategories/twoCategories.controller.js"></script>
+  <script type="text/javascript" src="./js/twoCategories/twoCategories.directive.js"></script>
   <script type="text/javascript" src="./js/dataservice/dataservice.module.js"></script>
   <script type="text/javascript" src="./js/dataservice/dataservice.js"></script>
 
@@ -180,7 +209,6 @@
       }
     });
 
-    contributions("Marco", "Rubio");
 
     function contributions(first, last) {
 
@@ -196,12 +224,12 @@
     }
 
       Number.prototype.formatMoney = function(c, d, t){
-            var n = this, 
-            c = isNaN(c = Math.abs(c)) ? 2 : c, 
-            d = d == undefined ? "." : d, 
-            t = t == undefined ? "," : t, 
-            s = n < 0 ? "-" : "", 
-            i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", 
+            var n = this,
+            c = isNaN(c = Math.abs(c)) ? 2 : c,
+            d = d == undefined ? "." : d,
+            t = t == undefined ? "," : t,
+            s = n < 0 ? "-" : "",
+            i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "",
             j = (j = i.length) > 3 ? j % 3 : 0;
            return s + '$' + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
             };
@@ -278,7 +306,7 @@
                       step: 1
                     }
                   }],
-                  yAxis: [//primary y-axis 
+                  yAxis: [//primary y-axis
                     {
                     title: {
                       text: 'Bills'

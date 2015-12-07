@@ -96,6 +96,28 @@ cosponsored-people > div {
   overflow: auto
 }
 
+two-categories {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: fixed;
+  z-index: 9001;
+  transition: 3s linear all;
+}
+two-categories > div {
+  width: 800px;
+  height: 600px;
+  position: relative;
+  margin: 10% auto;
+  padding: 5px 20px 5px 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #888888;
+  background: #fff;
+  z-index: 9001;
+  overflow: auto
+}
+
 rep1-bills {
   top: 0;
   bottom: 0;
@@ -191,19 +213,25 @@ joint-cosponsored > div {
 }
 
 .close-button{
-  position: relative;
+  position: absolute;
   top: 0px;
   right: 0px;
   padding: 2px;
+  height:75px;
+  width:75px;
 }
 
+.button-holder{
+  width:100%;
+  padding-bottom: 100px;
+}
 .hide{
 
 }
 
 .table-title{
   font-size: 30px;
-  padding-bottom: 5px;
+  padding-bottom: 40px;
 }
 
 .sponsorship-table{

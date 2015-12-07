@@ -187,7 +187,7 @@ $result7 = pg_query($dbconn, $namedGroupCosponsorSql) or die('Query failed: ' . 
 
   $result10 = pg_query($dbconn, $myAllCosponsoredSql) or die('Query failed: ' . pg_last_error());
 
-
+  
     while ($line = pg_fetch_row($result10)) {
         array_push($myAllCosponsored, $line);
     }

@@ -14,6 +14,8 @@
     var rep1Bills = [];
     var rep2Bills = [];
     var jointCosponsored = [];
+    var twoCategories = [];
+    
     return {
       getOneSponsored: getOneSponsored,
       setOneSponsored: setOneSponsored,
@@ -29,6 +31,8 @@
       setRep2Bills: setRep2Bills,
       getJointCosponsoredBills: getJointCosponsoredBills,
       setJointCosponsoredBills: setJointCosponsoredBills,
+      getTwoCategories: getTwoCategories,
+      setTwoCategories: setTwoCategories,
       processBillNumber: processBillNumber
     }
 
@@ -64,7 +68,6 @@
       allCosponsored = cosponsored;
     }
 
-
     function getRep1Bills(){
       return rep1Bills;
     }
@@ -87,6 +90,14 @@
 
     function setJointCosponsoredBills(bills){
       jointCosponsored = bills;
+    }
+
+    function getTwoCategories(){
+      return twoCategories;
+    }
+
+    function setTwoCategories(categories){
+      twoCategories = categories;
     }
 
     function processBillNumber(number){
