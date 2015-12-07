@@ -214,9 +214,6 @@ joint-cosponsored > div {
 .bill-title {
   font-weight: bold;
 }
-.textAndButton>div {
-  display: inline-block;
-}
 
 .close-button{
   position: absolute;
