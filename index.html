@@ -36,17 +36,21 @@
                   <div class="large-5 columns">
                      <div class="hide" ng-show="control.showSponsoredBills || control.showCosponsoredBills"></div>
                      <div>
-                        <h2 class="demoHeaders">Enter a name:</h2>
-                        <div class="nameField">
-                           <input id="autocomplete1" ng-model="control.representative1">
-                           <button class="button small" ng-disabled="!control.representative1" ng-click="control.run()"> Go </button>
-                        </div>
+                        <form>
+                           <fieldset>
+                              <legend>Enter a name:</legend>
+                              <input type="text" id="autocomplete1" ng-model="control.representative1" placeholder="">
+                           </fieldset>
+                        </form>
                      </div>
                   </div>
-                  <button class="button small" ng-click="control.toggleSecondName()"> {{control.compareButtonText}} </button>
+                  <div class="large-3 columns">
+                  <button class="button small columns-centered" ng-disabled="!control.representative1" ng-click="control.run()">Go</button>
+                  </div>
                   <div class="large-5 columns">
+                     <button class="button small" ng-click="control.toggleSecondName()"> {{control.compareButtonText}} </button>
                      <div ng-show="control.showSecondName">
-                        <h2 class="demoHeaders">Enter a second name:</h2>
+                        <label class="demoHeaders">Enter a second name:</label>
                         <div class="nameField" ng-show="control.showSecondName">
                            <input id="autocomplete2" ng-model="control.representative2" />
                         </div>
@@ -56,7 +60,6 @@
             </div>
          </div>
       </div>
-
       <div id="repVsRepContainer" ng-show = "control.showTwoSponsorship" class = "graph"></div>
       <div id="repVsRepByMonthContainer" ng-show = "control.showTwoSponsorship" class = "graph"></div>
       <div id="repVsPres" ng-show = "control.showOneSponsorship" class = "graph"></div>
@@ -143,14 +146,12 @@
                   <th>Category</th>
                   <th>Agree</th>
                   <th>Disagree</th>
-                  <th>Total</th>
             </thead>
             <tbody>
                <tr class="bill-row" ng-repeat="category in control.topCategories">
                   <td>{{category[0]}}</td>
                   <td>{{category[1]}}</td>
                   <td>{{category[2]}}</td>
-                  <td>{{category[3]}}</td>
                </tr>
             </tbody>
          </table>
