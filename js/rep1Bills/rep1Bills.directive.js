@@ -9,7 +9,6 @@
       restrict: 'E',
       scope: true,
       link: function() {
-        console.log("rep1Bills Directive Linked");
       },
       templateUrl: 'js/rep1Bills/rep1BillsTable.html',
       controller: 'rep1BillsController',

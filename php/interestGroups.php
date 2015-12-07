@@ -305,7 +305,7 @@ WHERE  catcode IN
 
 $agreeResult = pg_query($dbconn, $agreeSql) or die('Query failed: ' . pg_last_error());
 while ($line = pg_fetch_row($agreeResult)) {
-    array_push($agree, $line);
+    array_push($agree, $line[0]);
 }
 
 $disagree = array();
@@ -342,8 +342,8 @@ WHERE catcode IN (
 									WHERE person_id = (
 											SELECT id
 											FROM persons
-											WHERE first_name = 'Sherrod'
-												AND last_name = 'Brown'
+											WHERE first_name = '".$repFirst."'
+												AND last_name = '".$repLast."'
 											)
 									) AS pv
 									,votes_re_bills
@@ -383,8 +383,8 @@ WHERE catcode IN (
 											WHERE person_id = (
 													SELECT id
 													FROM persons
-													WHERE first_name = 'Sherrod'
-														AND last_name = 'Brown'
+													WHERE first_name = '".$repFirst."'
+														AND last_name = '".$repLast."'
 													)
 											) AS pv
 											,votes_re_bills
@@ -419,8 +419,8 @@ WHERE catcode IN (
 													WHERE person_id = (
 															SELECT id
 															FROM persons
-															WHERE first_name = 'Sherrod'
-																AND last_name = 'Brown'
+															WHERE first_name = '".$repFirst."'
+																AND last_name = '".$repLast."'
 															)
 													) AS pv
 													,votes_re_bills
@@ -466,8 +466,8 @@ WHERE catcode IN (
 												WHERE person_id = (
 														SELECT id
 														FROM persons
-														WHERE first_name = 'Sherrod'
-															AND last_name = 'Brown'
+														WHERE first_name = '".$repFirst."'
+															AND last_name = '".$repLast."'
 														)
 												) AS pv
 												,votes_re_bills
@@ -525,8 +525,8 @@ WHERE catcode IN (
 											WHERE person_id = (
 													SELECT id
 													FROM persons
-													WHERE first_name = 'Sherrod'
-														AND last_name = 'Brown'
+													WHERE first_name = '".$repFirst."'
+														AND last_name = '".$repLast."'
 													)
 											) AS pv
 											,votes_re_bills
@@ -561,8 +561,8 @@ WHERE catcode IN (
 													WHERE person_id = (
 															SELECT id
 															FROM persons
-															WHERE first_name = 'Sherrod'
-																AND last_name = 'Brown'
+															WHERE first_name = '".$repFirst."'
+																AND last_name = '".$repLast."'
 															)
 													) AS pv
 													,votes_re_bills
@@ -608,8 +608,8 @@ WHERE catcode IN (
 												WHERE person_id = (
 														SELECT id
 														FROM persons
-														WHERE first_name = 'Sherrod'
-															AND last_name = 'Brown'
+														WHERE first_name = '".$repFirst."'
+															AND last_name = '".$repLast."'
 														)
 												) AS pv
 												,votes_re_bills
@@ -653,10 +653,10 @@ WHERE catcode IN (
 
 $disagreeResult = pg_query($dbconn, $disagreeSql) or die('Query failed: ' . pg_last_error());
 while ($line = pg_fetch_row($disagreeResult)) {
-    array_push($disagree, $line);
+    array_push($disagree, $line[0]);
 }
 
-$result_array = $array($agree, $disagree);
+$result_array = array($agree, $disagree);
 echo json_encode($result_array);
 
 pg_close($dbconn);

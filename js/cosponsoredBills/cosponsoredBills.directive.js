@@ -8,9 +8,7 @@
     return {
       restrict: 'E',
       scope: true,
-      link: function() {
-        console.log("cosponsoredBills Directive Linked");
-      },
+      link: function() {},
       templateUrl: 'js/cosponsoredBills/cosponsoredBillsTable.html',
       controller: 'cosponsoredBillsController',
       controllerAs: 'cosponsoredBills'
