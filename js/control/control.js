@@ -276,6 +276,16 @@
       this.isAgree = isAgree;
     }
 
+    function calculateControversyScore(currentArray)
+    {
+     
+      currentArray = currentArray.slice(2);  //remove the vote_id and use only the integers
+      var max = Math.max.apply(null, currentArray);
+      var sum = currentArray.reduce(function(pv, cv) { return pv + cv; }, 0);
+
+      return max/sum;
+    }
+
     function repControversialCount(firstName, lastName) {
       $.post('php/controversy.php', {
           rep1First: firstName,
@@ -283,23 +293,58 @@
         },
 
         function(data) {
+
           data = JSON.parse(data);
           var agreeArr = data[0];
           var disagreeArr = data[1];
           var unionArray = new Array();
+
           for (var i = 0; i < agreeArr.length; i++) {
-            var temp = new tempObj(agreeArr[i], true);
+            var currentArray = agreeArr[i];
+            var score = calculateControversyScore(currentArray);
+            var temp = new tempObj(score, true);
             unionArray.push(temp);
           }
+
           for (var i = 0; i < disagreeArr.length; i++) {
-            var temp = new tempObj(disagreeArr[i], false);
+            var currentArray = agreeArr[i];
+            var score = calculateControversyScore(currentArray);
+            var temp = new tempObj(score, false);
             unionArray.push(temp);
           }
+
           unionArray.sort(function(x, y) {
-            return x.value - y.value;
+            return y.value-x.value;
           });
+
           parseControversialData(unionArray, firstName + " " + lastName);
         });
+    }
+
+      function parseControversialData(unionArray, repName) {
+
+      var step = Math.floor(unionArray.length / 20);
+
+      var parsedDataArr = new Array();
+
+      for (var j = 0; j < 20; j++) {
+        var stepStart = j * step;
+        var numAgree = 0;
+
+        for (var i = stepStart; i < (stepStart + step); i++) {
+          var tempObj = unionArray[i];
+
+          if (tempObj.isAgree) {
+            numAgree++;
+          }
+        }
+
+        var finalRatio = numAgree / step;
+        parsedDataArr.push(finalRatio);
+
+      }
+      console.log(parsedDataArr);
+      createControversyDisplay(parsedDataArr, repName)
     }
 
     function createControversyDisplay(probabilityArray, repName) {
@@ -316,6 +361,7 @@
             title: {
               text: 'Probability of agreeing with the party'
             },
+            min: 0,
             plotLines: [{
               value: 0,
               width: 1,
@@ -339,38 +385,9 @@
       });
     }
 
-    function parseControversialData(unionArray, repName) {
-      console.log(unionArray);
-      var step = Math.floor(unionArray.length / 20);
-      console.log(step);
-      var parsedDataArr = new Array();
-      for (var j = 0; j < 20; j++) {
-        var stepStart = j * step;
-        var numAgree = 0;
-        for (var i = stepStart; i < stepStart + step; i++) {
-          var tempObj = unionArray[i];
-
-          if (tempObj.isAgree) {
-            numAgree++;
-          }
-        }
-        var finalRatio = numAgree / step;
-        parsedDataArr.push(finalRatio);
-      }
-      console.log(parsedDataArr);
-      createControversyDisplay(parsedDataArr, repName)
-    }
-
     function createRepVsRepByMonthDisplay(agree, disagree, rep1Name, rep2Name, year) {
       var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      //var repMonthDisplay = document.createElement('div');
-      //repMonthDisplay.setAttribute('id', 'repMonthDisplay');
-      // repMonthDisplay.setAttribute('style', 'height: 400px; margin: auto; min-width: 310px; max-width: 700px;');
-      //document.getElementById('repVsRepContainer').appendChild(repMonthDisplay);
-      /* $('#repMonthDisplay').mouseout(function()
-       {
-        $('#repMonthDisplay').remove();
-       });*/
+
       $('#repVsRepByMonthContainer').highcharts({
         chart: {
           type: 'column'
@@ -525,7 +542,6 @@
           repLast: last
         }
       }).then(function(response) {
-        console.log(response);
         createSponsor(response.data);
       })
     }
@@ -539,7 +555,7 @@
       vm.countOneCosponsored = sponsor[3][0];
       vm.totalCosponsorCount = sponsor[4][0];
       vm.uniqueCosponsorCount = sponsor[5][0];
-      console.log('Please: ' + sponsor[6]);
+      //console.log('Please: ' + sponsor[6]);
       dataservice.setAllCosponsors(sponsor[6]);
       vm.topCosponsors = sponsor[7];
       vm.topCosponsored = sponsor[8];
@@ -653,7 +669,6 @@
         return y.donation - x.donation;
       });
 
-      console.log(categoriesArray);
       createContributionGraph(first + " " + last, categoriesArray)
     }
 
