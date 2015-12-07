@@ -1,0 +1,23 @@
+<div>
+  <image src = "images/Close_Button.ico" class="close-button" ng-click="jointCosponsored.hide()"></button>
+
+  <table class="bill-table" >
+      <caption class = "table-title"> Bills Cosponsored </Caption>
+      <thead>
+        <tr>
+          <th>Bill</th>
+          <th>Title</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        <tr class = "bill-row" ng-repeat  ="bill in jointCosponsored.getBills()" >
+          <td class = "bill-number-cell">{{ processBillNumber(bill[0]) }} </td>
+          <td class = "bill-title-cell">
+            <p class = "bill-title">{{ bill[8] }}
+            <p> {{bill[6]}}
+         </td>
+
+        </tr>
+      </tbody>
+    </table>

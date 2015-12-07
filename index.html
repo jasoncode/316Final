@@ -1,463 +1,397 @@
 <!doctype html>
-<html lang="us">
-    <head>
-        <meta charset="utf-8">
-        <title>jQuery UI Example Page</title>
-        <link href="jquery-ui.css" rel="stylesheet">
-        <style>
-            body{
-            font: 62.5% "Trebuchet MS", sans-serif;
-            margin: 50px;
-            }
+<html lang="us" ng-app="app">
 
-</style>
-    </head>
-    <body>
-        <h1>CS 316 -Visualizations</h1>
-        <div class="ui-widget">
-</div>
-        <div class="ui-widget">
-            <p>These are some static visualizations of the results of our SQL queries. We are working on setting up a server so that these visualizations can be generated dynamically for any two congresspersons.</p>
-        </div>
-        <!-- Autocomplete -->
-        <h2 class="demoHeaders">Enter a name:</h2>
-        <div>
-            <input id="autocomplete1" title="type &quot;a&quot;">
-        </div>
-        <h2 class="demoHeaders">Enter a second name:</h2>
-        <div>
-            <input id="autocomplete2" title="type &quot;a&quot;">
-        </div>
-        <button id="compare" type="button">Compare</button>
+<head>
+  <meta charset="utf-8">
+  <title>jQuery UI Example Page</title>
+  <link href="jquery-ui.css" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+  <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+</head>
 
-        <div id="repVsRepContainer" style="height: 400px; margin: auto; min-width: 310px; max-width: 700px;"></div>
-        <br />
-        <div id="repVsRepByMonthContainer" style="height: 400px; margin: auto; min-width: 310px; max-width: 700px;"></div>
-        <br />
-        <div id="repVsPres" style="height: 400px; margin: auto; min-width: 310px; max-width: 700px;"></div>
-        <!--
-        <div>
-           <iframe width="800" height="700" src="Brown_President.htm" frameborder="0" allowfullscreen> data-pg-id="39990"></iframe>             
-        </div>
-        
-        <div>
-            <iframe width="800" height="500" src="Brown_with_Leadership.htm" frameborder="0" allowfullscreen> data-pg-id="39990"></iframe>             
-        </div>
-        <div>
-            <iframe width="800" height="500" src="Brown_Cantwell_votesOverYears.htm" frameborder="0" allowfullscreen> data-pg-id="39990"></iframe>             
-        </div>
-        <h2 class="demoHeaders">Word cloud for the subjects of the bills Maria Cantwell (D-WA) and Mitch McConnell (R-KY) agree on:</h2>
-        <img width="800" height="500" src="WordCloud_agree.png">
-        <h2 class="demoHeaders"><br><br>Word cloud for the subjects of the bills Maria Cantwell (D-WA) and Mitch McConnell (R-KY) disagree on:</h2>
-        <img width="800" height="500" src="WordCloud_disagree.png">
-        <h2 class="demoHeaders"><br><br></h2>
-        <div>
-            <iframe width="800" height="500" src="Brown_Cantwell_similarity.htm" frameborder="0" allowfullscreen> data-pg-id="39990"></iframe>             
-        </div>  -->
+<body ng-controller="Control as control">
+  <h1>CS 316 -Visualizations</h1>
+  <div class="hide" ng-show="control.showSponsoredBills || control.showCosponsoredBills"></div>
+  <div>
+    <h2 class="demoHeaders">Enter a name:</h2>
+    <div class="nameField">
+      <input id="autocomplete1" ng-model="control.representative1">
+      <button ng-disabled="!control.representative1" ng-click="control.runOnePerson()" ng-hide = "control.showSecondName"> Go </button>
+    </div>
 
+  </div>
+
+  <button ng-click="control.toggleSecondName()"> {{control.compareButtonText}} </button>
+
+  <div ng-show="control.showSecondName">
+    <h2 class="demoHeaders">Enter a second name:</h2>
+    <div class="nameField" ng-show="control.showSecondName">
+      <input id="autocomplete2" ng-model="control.representative2" />
+      <button id="compare" ng-disabled = "!(control.representative1 && control.representative2)"ng-click="control.compare()" type="button">Go</button>
+    </div>
+  </div>
+
+  <div id="repVsRepContainer" ng-show = "control.showTwoSponsorship" class = "graph"></div>
+  <div id="repVsRepByMonthContainer" ng-show = "control.showTwoSponsorship" class = "graph"></div>
+  <div id="repVsPres" ng-show = "control.showOneSponsorship" class = "graph"></div>
+  <div id="controversialGraph" ng-show = "control.showOneSponsorship" class = "graph"></div>
+  <div id="contributionsGraph" ng-show = "control.showOneSponsorship" class = "graph"></div>
+
+
+  <div id="oneRepSponsorship" class="sponsorship" ng-show="control.showOneSponsorship">
+    <h6> {{control.representative1}} Sponsorship </h6>
+    <div class="textAndButton">
+      <p> Bills Sponsored: {{control.countOneSponsored}}
+        <button ng-hide="control.showSponsoredBills" ng-click="control.toggleSponsoredBills()"> See Bills </button>
+    </div>
+
+    <div ng-show="control.showSponsoredBills">
+      <sponsored-bills/>
+    </div>
+
+    <div>
+      <div class="textAndButton">
+        <p> Bills Cosponsored: {{control.countOneCosponsored}}
+          <button ng-hide="control.showCosponsoredBills" ng-click="control.toggleCosponsoredBills()"> See Bills </button>
+      </div>
+      <div ng-show="control.showCosponsoredBills">
+        <cosponsored-bills/>
+      </div>
+    </div>
+    <div id="sharedSponsorship">
+      <table class="sponsorship-table">
+        <caption class="table-title"> {{control.representative1}}'s Top Cosponsors </caption>
+        <thead>
+          <tr>
+            <th>Name</th>
+        </thead>
+        <tbody>
+          <tr class="bill-row" ng-repeat="person in control.topCosponsors">
+            <td class="bill-number-cell">{{person[0]}} {{person[1]}} </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <button ng-hide="control.showCosponsors" ng-click="control.toggleCosponsors()">See all {{control.uniqueCosponsorCount}} Cosponsors </button>
+
+      <div ng-show="control.showCosponsors">
+        <cosponsors/>
+      </div>
+
+
+
+      <table class="sponsorship-table">
+        <caption class="table-title"> Representatives {{control.representative1}} Cosponsors Most Often</Caption>
+        <tbody>
+          <tr class="bill-row" ng-repeat="person in control.topCosponsored">
+            <td class="bill-number-cell">{{person[0]}} {{person[1]}} </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <button ng-hide="control.showCosponsors" ng-click="control.toggleCosponsored()">See all {{control.cosponsoredCount}} representatives {{control.representative1}} has cosponsored</button>
+      <div ng-show="control.showCosponsored">
+        <cosponsored-people/>
+      </div>
+
+
+    </div>
+
+
+
+  </div>
+
+  <div id="twoRepSponsorship" class="sponsorship" ng-show="control.showTwoSponsorship">
+    <h6> {{control.representative1}}'s Bills Cosponsored by {{control.representative2}}</h6>
+    <div class="textAndButton">
+      <p> Bills Sponsored: {{control.rep1BillsCount}}
+        <button ng-hide="control.showRep1SponsoredBills" ng-click="control.toggleRep1Bills()"> See Bills </button>
+    </div>
+    <div ng-show = "control.showRep1Bills">
+      <rep1-bills/>
+    </div>
+
+    <h6> {{control.representative2}}'s Bills Cosponsored by {{control.representative1}}</h6>
+    <div class="textAndButton">
+      <p> Bills Sponsored: {{control.rep2BillsCount}}
+        <button ng-hide="control.showRep2SponsoredBills" ng-click="control.toggleRep2Bills()"> See Bills </button>
+    </div>
+    <div ng-show = "control.showRep2Bills".>
+      <rep2-bills/>
+    </div>
+
+    <h6> Bills Cosponsored by Both {{control.representative1}} and {{control.representative2}}</h6>
+    <div class="textAndButton">
+      <p> Bills Sponsored: {{control.cosponsoredBillsCount}}
+        <button ng-hide="control.showJointCosponsored" ng-click="control.toggleJointCosponsored()"> See Bills </button>
+    </div>
+    <div ng-show = "control.showJointCosponsored">
+      <joint-cosponsored/>
+    </div>
+
+    <table class="sponsorship-table">
+      <caption class="table-title"> {{control.representative1}} and {{control.representative2}} Voting Comparison by Category</caption>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Agree</th>
+          <th>Disagree</th>
+          <th>Total</th>
+      </thead>
+      <tbody>
+        <tr class="bill-row" ng-repeat="category in control.topCategories">
+          <td>{{category[0]}}</td>
+          <td>{{category[1]}}</td>
+          <td>{{category[2]}}</td>
+          <td>{{category[3]}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <button ng-click = "control.toggleTwoCategories()"> All categories</button>
+    <div ng-show = "control.showTwoCategories">
+      <two-categories/>
+    </div>
+  </div>
+
+  <script src="./bower_components/angular/angular.js"></script>
+  <script type="text/javascript" src="./js/app.module.js"></script>
   <script src="//code.jquery.com/jquery-1.10.2.js"></script>
   <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-  <script src="js/highcharts.js"></script>
-  <script src="js/highcharts-more.js"></script>
-  <script src="js/modules/exporting.js"></script>
+  <script src="./js/highcharts/highcharts.js"></script>
+  <script src="./js/highcharts/highcharts-more.js"></script>
+  <script src="./js/modules/exporting.js"></script>
+  <script type="text/javascript" src="./js/control/control.module.js"></script>
+  <script type="text/javascript" src="./js/control/control.js"></script>
+  <script type="text/javascript" src="./js/sponsoredBills/sponsoredBills.module.js"></script>
+  <script type="text/javascript" src="./js/sponsoredBills/sponsoredBills.controller.js"></script>
+  <script type="text/javascript" src="./js/sponsoredBills/sponsoredBills.directive.js"></script>
+  <script type="text/javascript" src="./js/cosponsoredBills/cosponsoredBills.module.js"></script>
+  <script type="text/javascript" src="./js/cosponsoredBills/cosponsoredBills.controller.js"></script>
+  <script type="text/javascript" src="./js/cosponsoredBills/cosponsoredBills.directive.js"></script>
+  <script type="text/javascript" src="./js/cosponsors/cosponsors.module.js"></script>
+  <script type="text/javascript" src="./js/cosponsors/cosponsors.controller.js"></script>
+  <script type="text/javascript" src="./js/cosponsors/cosponsors.directive.js"></script>
+  <script type="text/javascript" src="./js/cosponsoredPeople/cosponsoredPeople.module.js"></script>
+  <script type="text/javascript" src="./js/cosponsoredPeople/cosponsoredPeople.controller.js"></script>
+  <script type="text/javascript" src="./js/cosponsoredPeople/cosponsoredPeople.directive.js"></script>
+  <script type="text/javascript" src="./js/rep1Bills/rep1Bills.module.js"></script>
+  <script type="text/javascript" src="./js/rep1Bills/rep1Bills.controller.js"></script>
+  <script type="text/javascript" src="./js/rep1Bills/rep1Bills.directive.js"></script>
+  <script type="text/javascript" src="./js/rep2Bills/rep2Bills.module.js"></script>
+  <script type="text/javascript" src="./js/rep2Bills/rep2Bills.controller.js"></script>
+  <script type="text/javascript" src="./js/rep2Bills/rep2Bills.directive.js"></script>
+  <script type="text/javascript" src="./js/jointCosponsored/jointCosponsored.module.js"></script>
+  <script type="text/javascript" src="./js/jointCosponsored/jointCosponsored.controller.js"></script>
+  <script type="text/javascript" src="./js/jointCosponsored/jointCosponsored.directive.js"></script>
+  <script type="text/javascript" src="./js/twoCategories/twoCategories.module.js"></script>
+  <script type="text/javascript" src="./js/twoCategories/twoCategories.controller.js"></script>
+  <script type="text/javascript" src="./js/twoCategories/twoCategories.directive.js"></script>
+  <script type="text/javascript" src="./js/dataservice/dataservice.module.js"></script>
+  <script type="text/javascript" src="./js/dataservice/dataservice.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
-        <script>
+  <!--Autocomplete script-->
+  <script>
+    $("#autocomplete1").autocomplete({
+      source: "php/autocomplete.php",
+      minLength: 1,
 
-        var representative1;
-        var representative2;
+      select: function(event, ui) {
+        representative1 = ui.item.label;
+      }
+    });
 
-        $( "#autocomplete1" ).autocomplete({
-         source: "php/autocomplete.php",
-         minLength: 1,
+    $("#autocomplete2").autocomplete({
+      source: "php/autocomplete.php",
+      minLength: 1,
 
-         select: function( event, ui ) {
-            representative1 = ui.item.label;
-            
-         }
+      select: function(event, ui) {
+        representative2 = ui.item.label;
+
+      }
+    });
+
+
+    function contributions(first, last) {
+
+      $.post('php/contributions.php', {
+          rep1First: first,
+          rep1Last: last
+        },
+
+        function(data) {
+          var contributions_arr = JSON.parse(data);
+          parseContributionsData(contributions_arr);
         });
+    }
 
-        $( "#autocomplete2" ).autocomplete({
-         source: "php/autocomplete.php",
-         minLength: 1,
+      Number.prototype.formatMoney = function(c, d, t){
+            var n = this,
+            c = isNaN(c = Math.abs(c)) ? 2 : c,
+            d = d == undefined ? "." : d,
+            t = t == undefined ? "," : t,
+            s = n < 0 ? "-" : "",
+            i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "",
+            j = (j = i.length) > 3 ? j % 3 : 0;
+           return s + '$' + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+            };
 
-         select: function( event, ui ) {
-            representative2 = ui.item.label;
-            
-         }
-        });
+    function category(name, agree, disagree, total, donation)
+    {
+      this.name = name;
+      this.agree = agree;
+      this.disagree = disagree;
+      this.total = total;
+      this.donation = donation;
+    }
 
+    function parseContributionsData(contributions_arr)
+    {
+      var categoriesArray = new Array();
 
-        $("#compare").on('click', function()
-        {
-            var rep1FirstName = representative1.split(' ')[0];
-            var rep1LastName = representative1.split(' ')[1];
-            var rep2FirstName = representative2.split(' ')[0];
-            var rep2LastName = representative2.split(' ')[1];
+      for (var i = 0; i < contributions_arr.length; i++)
+      {
+        var categoryName = contributions_arr[i];
+        var agreeCount = contributions_arr[i+1];
+        var disagreeCount = - contributions_arr[i+2];
+        var totalCount = contributions_arr[i+3];
+        var contributionAmount = contributions_arr[i+4];
+        var newOrg = new category(categoryName, agreeCount, disagreeCount, totalCount, contributionAmount);
+        categoriesArray.push(newOrg);
+        i = i + 4;
+      }
 
-            rep1VsRep2(rep1FirstName, rep1LastName, rep2FirstName, rep2LastName);
-            repControversialCount(rep1FirstName, rep1LastName);
+      categoriesArray.sort(function(x, y)
+      {
+        return y.donation - x.donation;
+      });
 
-        });
+      console.log(categoriesArray);
+      createContributionGraph("Marco Rubio", categoriesArray)
+    }
 
+    function createContributionGraph(rep1Name, categoriesArray)
+    {
+      var organizations = new Array();
+      var agreeArray = new Array();
+      var disagreeArray = new Array();
+      var donations = new Array();
 
-        function rep1VsRep2(rep1FirstName, rep1LastName, rep2FirstName, rep2LastName)
-        {
-            //Holds the agreed/disagreed vote counts in order from 2011 - 2014
-            var agreeCountArray;
-            var disagreeCountArray;
-            var countArray;
+      for (var i = 0; i < categoriesArray.length; i++)
+      {
+        var category = categoriesArray[i];
+        organizations.push(category.name);
+        agreeArray.push(category.agree);
+        disagreeArray.push(category.disagree);
+        donations.push(category.donation);
 
-            var rep1 = rep1FirstName + ' ' + rep1LastName;
-            var rep2 = rep2FirstName + ' ' + rep2LastName;
+      }
 
-            $.post('php/repVsRepVoteCount.php', {
-                rep1First: rep1FirstName,
-                rep1Last: rep1LastName,
-                rep2First: rep2FirstName,
-                rep2Last: rep2LastName},
-
-                function(data){
-                    countArray = JSON.parse(data); //convert the JSON back into an array
-                    //console.log(countArray);
-                    agreeCountArray = countArray[0];
-                    disagreeCountArray = countArray[1];
-
-                    //negative values for the graph
-                    for(i = 0; i < disagreeCountArray.length; i++)
-                    {
-                      disagreeCountArray[i] = -(disagreeCountArray[i]);
+                  $('#contributionsGraph').highcharts({
+                  chart: {
+                    type: 'column'
+                  },
+                  title: {
+                    text: "Votes by " + rep1Name + " compared to the top donors"
+                  },
+                  subtitle: {
+                    text: 'Source: <a href="http://www.govtrack.us/developers">Govtrack.us</a>'
+                  },
+                  xAxis: [{
+                    title: {
+                      text: 'Organization'
+                    },
+                    categories: organizations,
+                    reversed: false,
+                    labels: {
+                     rotation: -45,
+                      step: 1
                     }
-
-                    agreeWithPresArray = countArray[2];
-                    disagreeWithPresArray=countArray[3];
-
-                    //negative values for the graph
-                    for(i = 0; i < disagreeWithPresArray.length; i++)
+                  }],
+                  yAxis: [//primary y-axis
                     {
-                      disagreeWithPresArray[i] = -(disagreeWithPresArray[i]);
+                    title: {
+                      text: 'Bills'
+                    },
+                    labels: {
+                      formatter: function() {
+                      return Math.abs(this.value);
+                      }
                     }
+                  }, {
+                    title: {
+                      text: 'Donation Amount'
+                    },
+                    opposite: true,
+                    labels: {
+                      formatter: function() {
+                      return this.value.formatMoney(0, '.', ',');
+                      },
+                    }
+                  }],
+                  tooltip: {
+                            shared: true
+                        },
+                  plotOptions: {
+                    series: {
+                      stacking: 'normal'
+                    }
+                  },
 
+                  tooltip: {
 
-                    createRepVsRepChart(agreeCountArray, disagreeCountArray, rep1, rep2);
-                    createRep1VsPresident(agreeWithPresArray, disagreeWithPresArray, rep1);
+                    formatter: function() {
+                      var temp = this.key;
+                      for (var i = 0; i < categoriesArray.length; i++)
+                      {
+                        var category = categoriesArray[i];
+
+                        if (temp == category.name)
+                        {
+                          return '<b>'+ 'Amount: ' + category.donation.formatMoney(0, '.', ',') + '</b>';
+                        }
+
+                      }
+                    }
+                  },
+
+                  series: [{
+                    name: 'Disagree',
+                    data: disagreeArray
+                  }, {
+                    name: 'Agree',
+                    data: agreeArray
+                  }, {
+                    name: 'Donation Amount',
+                    type: 'spline',
+                    yAxis: 1,
+                    data: donations,
+                    tooltip: {
+                        formatter: function() {
+                            var temp = this.key;
+                            for (var i = 0; i < categoriesArray.length; i++)
+                            {
+                              var category = categoriesArray[i];
+
+                              if (temp == category.name)
+                              {
+                                return '<b>'+ 'Amount: ' + category.donation + '</b>';
+                              }
+
+                            }
+                          }
+                    }
+        }
+                  ]
                 });
+    }
 
 
-        }
 
-        function createRepVsRepChart(agreeCountArray, disagreeCountArray, rep1Name, rep2Name)
-        {
-                                    var years = ["2011", "2012", "2013", "2014"];
+  </script>
+</body>
 
-                                    $('#repVsRepContainer').highcharts({
-                                                               chart: {
-                                                               type: 'column'
-                                                               },
-                                                               title: {
-                                                               text: 'Votes by ' + rep1Name + ', ' + rep2Name
-                                                               },
-                                                               subtitle: {
-                                                               text: 'Source: <a href="http://www.govtrack.us/developers">Govtrack.us</a>'
-                                                               },
-                                                               xAxis: [{
-                                                                       title: {
-                                                                       text: 'Year'
-                                                                       },
-                                                                       categories: years,
-                                                                       reversed: false,
-                                                                       labels: {
-                                                                       step: 1
-                                                                       }
-                                                                       }, { // mirror axis on right side
-                                                                       opposite: true,
-                                                                       reversed: false,
-                                                                       categories: years,
-                                                                       linkedTo: 0,
-                                                                       labels: {
-                                                                       step: 1
-                                                                       }
-                                                                       }],
-                                                               yAxis: {
-                                                               title: {
-                                                               text: 'Votes'
-                                                               },
-                                                               labels: {
-                                                               formatter: function () {
-                                                               return Math.abs(this.value);
-                                                               }
-                                                               }
-                                                               },
-                                                               
-                                                               plotOptions: {
-                                                               series: {
-                                                               stacking: 'normal'
-                                                               }
-                                                               },
-                                                               
-                                                               tooltip: {
-                                                               formatter: function () {
-                                                               return '<b>' + this.series.name + 's in year ' + this.point.category + '</b><br/>' +
-                                                               'Count: ' + Highcharts.numberFormat(Math.abs(this.point.y), 0);
-                                                               }
-                                                               },
-                                                               
-                                                               series: [{
-                                                                        name: 'Disagree',
-                                                                        data:  disagreeCountArray.reverse()
-                                                                        }, {
-                                                                        name: 'Agree',
-                                                                        data: agreeCountArray.reverse()
-                                                                        }]
-                                                               });
-        
-        viewByMonthButtons(rep1Name, rep2Name);
-                                
-        }
-
-        function viewByMonthButtons(rep1Name, rep2Name)
-        {
-          var grid = document.getElementById('repVsRepContainer');
-          var labels = grid.getElementsByClassName("highcharts-axis-labels highcharts-xaxis-labels")[0];
-          var years = labels.getElementsByTagName("text");
-
-          for (var i = 0; i < years.length; i++)
-          {
-
-            var yearElement = years[i];
-            year = yearElement.innerHTML;
-            yearElement.addEventListener("click", phpByMonthDisplay.bind(null, year, rep1Name, rep2Name));
-
-            //Things to make the button appear and look pretty later
-
-            /*year = years[i].innerHTML;
-
-            years[i].innerHTML = '';
-
-            var yearButton = document.createElement('button');
-            yearButton.innerHTML=year;
-            years[i].appendChild(yearButton);*/
-          }
-          
-        }
-
-        function phpByMonthDisplay(yearInput, rep1Name, rep2Name)
-        {
-
-            var rep1FirstName = rep1Name.split(' ')[0];
-            var rep1LastName = rep1Name.split(' ')[1];
-            var rep2FirstName = rep2Name.split(' ')[0];
-            var rep2LastName = rep2Name.split(' ')[1];
-
-            var agreeArr;
-            var disagreeArr;
-
-            $.post('php/repVsRepByMonth.php', {
-                rep1First: rep1FirstName,
-                rep1Last: rep1LastName,
-                rep2First: rep2FirstName,
-                rep2Last: rep2LastName,
-                year: yearInput},
-                function(data)
-                {
-                  data = JSON.parse(data);
-                  agreeArr = data[0];
-                 
-                  disagreeArr = data[1];
-                  
-                  formatMonthArrays(agreeArr, disagreeArr, rep1Name, rep2Name, yearInput);
-                   console.log(agreeArr);
-                   console.log(disagreeArr);
-                });
-
-        }
-
-        function formatMonthArrays(agreeArr, disagreeArr, rep1Name, rep2Name, year)
-        {
-            var fixedAgreeArr = Array.apply(null, new Array(12)).map(Number.prototype.valueOf,0);
-            var fixedDisagreeArr = Array.apply(null, new Array(12)).map(Number.prototype.valueOf,0);
-
-            for (var i = 0; i < agreeArr.length-1; i = i+2)
-            {
-              var month = agreeArr[i];
-              var value = agreeArr[i+1];
-              fixedAgreeArr[month-1] = value;
-            }
-
-            for (var i = 0; i < disagreeArr.length-1; i = i+2)
-            {
-              var month = disagreeArr[i];
-              var value = disagreeArr[i+1];
-              fixedDisagreeArr[month-1] = -value;
-            }
-
-            createRepVsRepByMonthDisplay(fixedAgreeArr, fixedDisagreeArr, rep1Name, rep2Name, year);
-        }
-
-        function repControversialCount(firstName, lastName)
-        {
-            $.post('php/controversy.php', {
-                rep1First: firstName,
-                rep1Last: lastName},
-                
-                function(data)
-                {
-                  data = JSON.parse(data);
-                  agreeArr = data[0];
-                  agreeArr.sort();
-                 
-                  disagreeArr = data[1];
-                  disagreeArr.sort();
-                  console.log(agreeArr);
-                  console.log(disagreeArr);
-
-                });
-        }
-
-        function createRepVsRepByMonthDisplay(agree, disagree, rep1Name, rep2Name, year)
-        {
-         var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-         //var repMonthDisplay = document.createElement('div');
-         //repMonthDisplay.setAttribute('id', 'repMonthDisplay');
-        // repMonthDisplay.setAttribute('style', 'height: 400px; margin: auto; min-width: 310px; max-width: 700px;');
-         //document.getElementById('repVsRepContainer').appendChild(repMonthDisplay);
-
-        /* $('#repMonthDisplay').mouseout(function()
-         {
-          $('#repMonthDisplay').remove();
-         });*/
-
-         $('#repVsRepByMonthContainer').highcharts({
-                                                               chart: {
-                                                               type: 'column'
-                                                               },
-                                                               title: {
-                                                               text: 'Votes by ' + rep1Name + ', ' + rep2Name + '( '+ year+' )'
-                                                               },
-                                                               subtitle: {
-                                                               text: 'Source: <a href="http://www.govtrack.us/developers">Govtrack.us</a>'
-                                                               },
-                                                               xAxis: [{
-                                                                       title: {
-                                                                       text: 'Month'
-                                                                       },
-                                                                       categories: months,
-                                                                       reversed: false,
-                                                                       labels: {
-                                                                       step: 1
-                                                                       }
-                                                                       }, { // mirror axis on right side
-                                                                       opposite: true,
-                                                                       reversed: false,
-                                                                       categories: months,
-                                                                       linkedTo: 0,
-                                                                       labels: {
-                                                                       step: 1
-                                                                       }
-                                                                       }],
-                                                               yAxis: {
-                                                               title: {
-                                                               text: 'Votes'
-                                                               },
-                                                               labels: {
-                                                               formatter: function () {
-                                                               return Math.abs(this.value);
-                                                               }
-                                                               }
-                                                               },
-                                                               
-                                                               plotOptions: {
-                                                               series: {
-                                                               stacking: 'normal'
-                                                               }
-                                                               },
-                                                               
-                                                               tooltip: {
-                                                               formatter: function () {
-                                                               return '<b>' + this.series.name + 's in month ' + this.point.category + '</b><br/>' +
-                                                               'Count: ' + Highcharts.numberFormat(Math.abs(this.point.y), 0);
-                                                               }
-                                                               },
-                                                               
-                                                               series: [{
-                                                                        name: 'Disagree',
-                                                                        data:  disagree
-                                                                        }, {
-                                                                        name: 'Agree',
-                                                                        data: agree
-                                                                        }]
-                                                               });
-
-        }
-
-        function createRep1VsPresident(agreeArray, disagreeArray, rep1Name)
-        {
-          var years = ["2012", "2013"];
-                  $(document).ready(function () {
-                                    $('#repVsPres').highcharts({
-                                                               chart: {
-                                                               type: 'column'
-                                                               },
-                                                               title: {
-                                                               text: "Votes by " + rep1Name + " compared to the President's position"
-                                                               },
-                                                               subtitle: {
-                                                               text: 'Source: <a href="http://www.govtrack.us/developers">Govtrack.us</a>'
-                                                               },
-                                                               xAxis: [{
-                                                                       title: {
-                                                                       text: 'Year'
-                                                                       },
-                                                                       categories: years,
-                                                                       reversed: false,
-                                                                       labels: {
-                                                                       step: 1
-                                                                       }
-                                                                       }, { // mirror axis on right side
-                                                                       opposite: true,
-                                                                       reversed: false,
-                                                                       categories: years,
-                                                                       linkedTo: 0,
-                                                                       labels: {
-                                                                       step: 1
-                                                                       }
-                                                                       }],
-                                                               yAxis: {
-                                                               title: {
-                                                               text: 'Votes'
-                                                               },
-                                                               labels: {
-                                                               formatter: function () {
-                                                               return Math.abs(this.value);
-                                                               }
-                                                               }
-                                                               },
-                                                               
-                                                               plotOptions: {
-                                                               series: {
-                                                               stacking: 'normal'
-                                                               }
-                                                               },
-                                                               
-                                                               tooltip: {
-                                                               formatter: function () {
-                                                               return '<b>' + this.series.name + 's in year ' + this.point.category + '</b><br/>' +
-                                                               'Count: ' + Highcharts.numberFormat(Math.abs(this.point.y), 0);
-                                                               }
-                                                               },
-                                                               
-                                                               series: [{
-                                                                        name: 'Disagree',
-                                                                        data:  disagreeArray
-                                                                        }, {
-                                                                        name: 'Agree',
-                                                                        data: agreeArray
-                                                                        }]
-                                                               });
-                                    });
-        }
-
-
-</script>
-    </body>
 </html>
