@@ -34,7 +34,7 @@
   <div id="repVsRepByMonthContainer" ng-show = "control.showTwoSponsorship" class = "graph"></div>
   <div id="repVsPres" ng-show = "control.showOneSponsorship" class = "graph"></div>
   <div id="controversialGraph" ng-show = "control.showOneSponsorship" class = "graph"></div>
-  <div id="contributionsGraph" class = "graph" />
+  <div id="contributionsGraph" ng-show = "control.showOneSponsorship" class = "graph"></div>
 
 
   <div id="oneRepSponsorship" class="sponsorship" ng-show="control.showOneSponsorship">
@@ -44,7 +44,7 @@
         <button ng-hide="control.showSponsoredBills" ng-click="control.toggleSponsoredBills()"> See Bills </button>
     </div>
 
-    <div ng-show=c ontrol.showSponsoredBills>
+    <div ng-show="control.showSponsoredBills">
       <sponsored-bills/>
     </div>
 
@@ -209,7 +209,6 @@
       }
     });
 
-    contributions("Marco", "Rubio");
 
     function contributions(first, last) {
 
@@ -225,12 +224,12 @@
     }
 
       Number.prototype.formatMoney = function(c, d, t){
-            var n = this, 
-            c = isNaN(c = Math.abs(c)) ? 2 : c, 
-            d = d == undefined ? "." : d, 
-            t = t == undefined ? "," : t, 
-            s = n < 0 ? "-" : "", 
-            i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", 
+            var n = this,
+            c = isNaN(c = Math.abs(c)) ? 2 : c,
+            d = d == undefined ? "." : d,
+            t = t == undefined ? "," : t,
+            s = n < 0 ? "-" : "",
+            i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "",
             j = (j = i.length) > 3 ? j % 3 : 0;
            return s + '$' + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
             };
@@ -307,7 +306,7 @@
                       step: 1
                     }
                   }],
-                  yAxis: [//primary y-axis 
+                  yAxis: [//primary y-axis
                     {
                     title: {
                       text: 'Bills'

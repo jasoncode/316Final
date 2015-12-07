@@ -2,10 +2,8 @@
 
 
 		//get representative 1
-		$request = file_get_contents("php://input");
-	  $data = json_decode($request);
-	  $rep1First = $data->repFirst;
-	  $rep1Last = $data->repLast;
+		$rep1First = $_POST['rep1First'];
+		$rep1Last = $_POST['rep1Last'];
 
 		$dbconn = pg_connect("dbname=us_congress host=localhost user=postgres password=Bd3nM2!Vg27aJ!0")
     				or die('Could not connect: ' . pg_last_error());

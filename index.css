@@ -213,19 +213,25 @@ joint-cosponsored > div {
 }
 
 .close-button{
-  position: relative;
+  position: absolute;
   top: 0px;
   right: 0px;
   padding: 2px;
+  height:75px;
+  width:75px;
 }
 
+.button-holder{
+  width:100%;
+  padding-bottom: 100px;
+}
 .hide{
 
 }
 
 .table-title{
   font-size: 30px;
-  padding-bottom: 5px;
+  padding-bottom: 40px;
 }
 
 .sponsorship-table{

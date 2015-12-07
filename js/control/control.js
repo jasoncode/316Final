@@ -96,7 +96,7 @@
       repVsPresident(first, last);
       repControversialCount(first, last);
       sponsor(first, last);
-      donors(first,last);
+      contributions(first,last);
     }
 
     function compare() {
@@ -576,10 +576,6 @@
       vm.showTwoSponsorship = true;
     }
 
-    function donors(){
-
-    }
-
     function twoCategories(r1First, r1Last, r2First, r2Last){
       $http({
         method: 'POST',
@@ -601,8 +597,182 @@
       for(var i = 0; i < 10; i ++){
         vm.topCategories.push(data[i]);
       }
-      console.log("BLEAH: " + vm.topCategories);
     }
+
+    function contributions(first, last) {
+
+      $.post('php/contributions.php', {
+          rep1First: first,
+          rep1Last: last
+        },
+
+        function(data) {
+          var contributions_arr = JSON.parse(data);
+          parseContributionsData(contributions_arr, first, last);
+        });
+    }
+
+      Number.prototype.formatMoney = function(c, d, t){
+            var n = this,
+            c = isNaN(c = Math.abs(c)) ? 2 : c,
+            d = d == undefined ? "." : d,
+            t = t == undefined ? "," : t,
+            s = n < 0 ? "-" : "",
+            i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "",
+            j = (j = i.length) > 3 ? j % 3 : 0;
+           return s + '$' + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+            };
+
+    function category(name, agree, disagree, total, donation)
+    {
+      this.name = name;
+      this.agree = agree;
+      this.disagree = disagree;
+      this.total = total;
+      this.donation = donation;
+    }
+
+    function parseContributionsData(contributions_arr, first, last)
+    {
+      var categoriesArray = new Array();
+
+      for (var i = 0; i < contributions_arr.length; i++)
+      {
+        var categoryName = contributions_arr[i];
+        var agreeCount = contributions_arr[i+1];
+        var disagreeCount = - contributions_arr[i+2];
+        var totalCount = contributions_arr[i+3];
+        var contributionAmount = contributions_arr[i+4];
+        var newOrg = new category(categoryName, agreeCount, disagreeCount, totalCount, contributionAmount);
+        categoriesArray.push(newOrg);
+        i = i + 4;
+      }
+
+      categoriesArray.sort(function(x, y)
+      {
+        return y.donation - x.donation;
+      });
+
+      console.log(categoriesArray);
+      createContributionGraph(first + " " + last, categoriesArray)
+    }
+
+    function createContributionGraph(rep1Name, categoriesArray)
+    {
+      var organizations = new Array();
+      var agreeArray = new Array();
+      var disagreeArray = new Array();
+      var donations = new Array();
+
+      for (var i = 0; i < categoriesArray.length; i++)
+      {
+        var category = categoriesArray[i];
+        organizations.push(category.name);
+        agreeArray.push(category.agree);
+        disagreeArray.push(category.disagree);
+        donations.push(category.donation);
+
+      }
+
+                  $('#contributionsGraph').highcharts({
+                  chart: {
+                    type: 'column'
+                  },
+                  title: {
+                    text: "Votes by " + rep1Name + " compared to the top donors"
+                  },
+                  subtitle: {
+                    text: 'Source: <a href="http://www.govtrack.us/developers">Govtrack.us</a>'
+                  },
+                  xAxis: [{
+                    title: {
+                      text: 'Organization'
+                    },
+                    categories: organizations,
+                    reversed: false,
+                    labels: {
+                     rotation: -45,
+                      step: 1
+                    }
+                  }],
+                  yAxis: [//primary y-axis
+                    {
+                    title: {
+                      text: 'Bills'
+                    },
+                    labels: {
+                      formatter: function() {
+                      return Math.abs(this.value);
+                      }
+                    }
+                  }, {
+                    title: {
+                      text: 'Donation Amount'
+                    },
+                    opposite: true,
+                    labels: {
+                      formatter: function() {
+                      return this.value.formatMoney(0, '.', ',');
+                      },
+                    }
+                  }],
+                  tooltip: {
+                            shared: true
+                        },
+                  plotOptions: {
+                    series: {
+                      stacking: 'normal'
+                    }
+                  },
+
+                  tooltip: {
+
+                    formatter: function() {
+                      var temp = this.key;
+                      for (var i = 0; i < categoriesArray.length; i++)
+                      {
+                        var category = categoriesArray[i];
+
+                        if (temp == category.name)
+                        {
+                          return '<b>'+ 'Amount: ' + category.donation.formatMoney(0, '.', ',') + '</b>';
+                        }
+
+                      }
+                    }
+                  },
+
+                  series: [{
+                    name: 'Disagree',
+                    data: disagreeArray
+                  }, {
+                    name: 'Agree',
+                    data: agreeArray
+                  }, {
+                    name: 'Donation Amount',
+                    type: 'spline',
+                    yAxis: 1,
+                    data: donations,
+                    tooltip: {
+                        formatter: function() {
+                            var temp = this.key;
+                            for (var i = 0; i < categoriesArray.length; i++)
+                            {
+                              var category = categoriesArray[i];
+
+                              if (temp == category.name)
+                              {
+                                return '<b>'+ 'Amount: ' + category.donation + '</b>';
+                              }
+
+                            }
+                          }
+                    }
+        }
+                  ]
+                });
+    }
+
 
 
   }
