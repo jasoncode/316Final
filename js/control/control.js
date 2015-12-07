@@ -24,6 +24,7 @@
     vm.showRep2Bills = false;
     vm.showJointCosponsored = false;
     vm.showTwoCategories = false;
+    vm.showMonth = false;
     vm.run = run;
     vm.toggleSponsoredBills = toggleSponsoredBills;
     vm.toggleCosponsoredBills = toggleCosponsoredBills;
@@ -36,8 +37,9 @@
     vm.toggleTwoCategories = toggleTwoCategories;
     vm.compareButtonText = "Compare";
 
- 
+
     function run(){
+      vm.showMonth = false;
       if(vm.showSecondName){
         compare();
       }
@@ -45,7 +47,7 @@
         runOnePerson();
       }
     }
-    
+
     function toggleSponsoredBills() {
       vm.showSponsoredBills = !vm.showSponsoredBills;
     }
@@ -230,6 +232,7 @@
     }
 
     function phpByMonthDisplay(yearInput, rep1Name, rep2Name) {
+      vm.showMonth = true;
       var rep1FirstName = rep1Name.split(' ')[0];
       var rep1LastName = rep1Name.split(' ')[1];
       var rep2FirstName = rep2Name.split(' ')[0];
@@ -252,6 +255,7 @@
           console.log(agreeArr);
           console.log(disagreeArr);
         });
+        $scope.$apply();
     }
 
     function formatMonthArrays(agreeArr, disagreeArr, rep1Name, rep2Name, year) {
