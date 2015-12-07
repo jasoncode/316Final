@@ -62,7 +62,7 @@ cosponsors {
   transition: 3s linear all;
 }
 cosponsors > div {
-  width: 800px;
+  width: 500px;
   height: 600px;
   position: relative;
   margin: 10% auto;
@@ -84,7 +84,7 @@ cosponsored-people {
   transition: 3s linear all;
 }
 cosponsored-people > div {
-  width: 800px;
+  width: 500px;
   height: 600px;
   position: relative;
   margin: 10% auto;
@@ -194,6 +194,12 @@ joint-cosponsored > div {
 }
 .bill-table {
   font-size: 14px;
+  align: center;
+  margin: 0 auto;
+}
+
+.people-table{
+  font-size: 20px;
 }
 .bill-row>td {
   padding: 5px;

@@ -1,7 +1,9 @@
 <div>
-  <image src = "images/Close_Button.ico" class="close-button" ng-click="cosponsors.hide()"></button>
+  <div class = "button-holder">
+    <image src = "images/Close_Button.ico" class="close-button" ng-click="cosponsored.hide()"></button>
+ </div>
 
-  <table class="bill-table">
+  <table class="people-table">
     <caption class = "table-title"> All Representatives Cosponsored </Caption>
     <thead>
       <tr>
@@ -10,7 +12,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr class="bill-row" ng-repeat="cosponsor in cosponsors.getAllCosponsored()">
+      <tr class="bill-row" ng-repeat="cosponsor in cosponsored.getAllCosponsored()">
         <td >{{cosponsor[0]}} {{cosponsor[1]}} </td>
         <td> {{cosponsor[2]}} </td>
 
