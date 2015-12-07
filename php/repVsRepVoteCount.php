@@ -48,7 +48,8 @@ $agreeSQL = "SELECT COUNT(*) AS agreedCount,YEAR, Person1, Person2
 
 				ON relevantVotes.id = allAgreements.vote_id
 
-			GROUP BY YEAR, Person1, Person2";
+			GROUP BY YEAR, Person1, Person2
+			ORDER BY YEAR DESC";
 
 			$result1 = pg_query($dbconn, $agreeSQL) or die('Query failed: ' . pg_last_error());
 
@@ -92,7 +93,8 @@ $disagreeSQL = "SELECT COUNT(*) as agreedCount,YEAR, Person1, Person2
 
 				ON relevantVotes.id = allDisagreements.vote_id
 
-			GROUP BY YEAR, Person1, Person2";
+			GROUP BY YEAR, Person1, Person2
+			ORDER BY YEAR DESC";
 
 			$result2 = pg_query($dbconn, $disagreeSQL) or die('Query failed: ' . pg_last_error());
 
