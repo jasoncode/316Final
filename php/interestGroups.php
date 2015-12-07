@@ -342,8 +342,8 @@ WHERE catcode IN (
 									WHERE person_id = (
 											SELECT id
 											FROM persons
-											WHERE first_name = 'Sherrod'
-												AND last_name = 'Brown'
+											WHERE first_name = '".$repFirst."'
+												AND last_name = '".$repLast."'
 											)
 									) AS pv
 									,votes_re_bills
@@ -383,8 +383,8 @@ WHERE catcode IN (
 											WHERE person_id = (
 													SELECT id
 													FROM persons
-													WHERE first_name = 'Sherrod'
-														AND last_name = 'Brown'
+													WHERE first_name = '".$repFirst."'
+														AND last_name = '".$repLast."'
 													)
 											) AS pv
 											,votes_re_bills
@@ -419,8 +419,8 @@ WHERE catcode IN (
 													WHERE person_id = (
 															SELECT id
 															FROM persons
-															WHERE first_name = 'Sherrod'
-																AND last_name = 'Brown'
+															WHERE first_name = '".$repFirst."'
+																AND last_name = '".$repLast."'
 															)
 													) AS pv
 													,votes_re_bills
@@ -466,8 +466,8 @@ WHERE catcode IN (
 												WHERE person_id = (
 														SELECT id
 														FROM persons
-														WHERE first_name = 'Sherrod'
-															AND last_name = 'Brown'
+														WHERE first_name = '".$repFirst."'
+															AND last_name = '".$repLast."'
 														)
 												) AS pv
 												,votes_re_bills
@@ -525,8 +525,8 @@ WHERE catcode IN (
 											WHERE person_id = (
 													SELECT id
 													FROM persons
-													WHERE first_name = 'Sherrod'
-														AND last_name = 'Brown'
+													WHERE first_name = '".$repFirst."'
+														AND last_name = '".$repLast."'
 													)
 											) AS pv
 											,votes_re_bills
@@ -561,8 +561,8 @@ WHERE catcode IN (
 													WHERE person_id = (
 															SELECT id
 															FROM persons
-															WHERE first_name = 'Sherrod'
-																AND last_name = 'Brown'
+															WHERE first_name = '".$repFirst."'
+																AND last_name = '".$repLast."'
 															)
 													) AS pv
 													,votes_re_bills
@@ -608,8 +608,8 @@ WHERE catcode IN (
 												WHERE person_id = (
 														SELECT id
 														FROM persons
-														WHERE first_name = 'Sherrod'
-															AND last_name = 'Brown'
+														WHERE first_name = '".$repFirst."'
+															AND last_name = '".$repLast."'
 														)
 												) AS pv
 												,votes_re_bills

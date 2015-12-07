@@ -94,7 +94,7 @@
     }
 
     function runOnePerson() {
-      vm.representative1 = document.getElementById("autocomplete1").value;
+      vm.representative1 = nameCase(document.getElementById("autocomplete1").value);
       vm.showSponsoredBills = false;
       vm.showCosponsoredBills = false;
       vm.seeBillsText = "See Bills";
@@ -109,8 +109,8 @@
     }
 
     function compare() {
-      vm.representative1 = document.getElementById("autocomplete1").value;
-      vm.representative2 = document.getElementById("autocomplete2").value;
+      vm.representative1 = nameCase(document.getElementById("autocomplete1").value);
+      vm.representative2 = nameCase(document.getElementById("autocomplete2").value);
       var rep1FirstName = vm.representative1.split(' ')[0];
       var rep1LastName = vm.representative1.split(' ')[1];
       var rep2FirstName = vm.representative2.split(' ')[0];
@@ -119,6 +119,12 @@
       compareSponsor(rep1FirstName, rep1LastName, rep2FirstName, rep2LastName);
       twoCategories(rep1FirstName, rep1LastName, rep2FirstName, rep2LastName);
     };
+
+    function nameCase(str) {
+      return str.replace(/\w\S*/g, function(txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+      });
+    }
 
     function rep1VsRep2(rep1FirstName, rep1LastName, rep2FirstName, rep2LastName) {
       //Holds the agreed/disagreed vote counts in order from 2011 - 2014
@@ -793,17 +799,17 @@
     function interestGroups(first, last) {
 
       $http({
-          method: 'POST',
-          url: 'php/interestGroups.php',
-          data: {
-            repFirst: first,
-            repLast: last
-          }
-        }).then(function(data) {
-          createInterestGroups(data);
-        })
+        method: 'POST',
+        url: 'php/interestGroups.php',
+        data: {
+          repFirst: first,
+          repLast: last
+        }
+      }).then(function(data) {
+        createInterestGroups(data);
+      })
 
-      }
+    }
 
     function createInterestGroups(data) {
       vm.dataStuff = data.data;
